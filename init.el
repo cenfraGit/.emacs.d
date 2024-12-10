@@ -1,7 +1,7 @@
-(server-start)
+;; (server-start)
 (setq native-comp-speed 3)
 
-;; ----------------------- packages ----------------------- ;;
+;; -------------------- package setup -------------------- ;;
 
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -25,7 +25,6 @@
  ring-bell-function 'ignore
  visible-bell nil
  use-dialog-box nil
- scroll-preserve-screen-position t
  use-short-answers t
  case-fold-search nil
  make-backup-files nil
@@ -34,18 +33,17 @@
  custom-safe-themes t
  backup-directory-alist '(("." . "~/.emacs.d/.emacs-backups"))
  default-directory "~/"
- ;default-directory "~/OneDrive/Desktop/"
+ ;; default-directory "~/OneDrive/Desktop/"
  display-line-numbers-type 'relative
  )
 
 (setq-default indent-tabs-mode nil)
-(setq-default cursor-type 'bar)
+;; (setq-default cursor-type 'bar)
 (setq-default truncate-lines t)
 
-;; -------------------- configure lsp -------------------- ;;
+;; ---------------------- lsp setup ---------------------- ;;
 
 (setq package-check-signature nil)
-(package-refresh-contents)
 
 (use-package lsp-mode
   :ensure t
@@ -61,19 +59,7 @@
                          (require 'lsp-pyright)
                          (lsp-deferred))))
 
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode
-;;   :config
-;;   (setq lsp-ui-doc-enable t
-;;         lsp-ui-doc-position 'at-point
-;;         lsp-ui-sideline-enable t
-;;         lsp-ui-sideline-show-diagnostics t
-;;         lsp-ui-sideline-show-code-actions t
-;;         lsp-ui-sideline-show-hover t
-;;         lsp-ui-sideline-delay 0.05))
-
-;; ------------------ configure packages ------------------ ;;
+;; ---------------- package configuration ---------------- ;;
 
 (use-package tree-sitter)
 (use-package tree-sitter-langs)
@@ -87,9 +73,6 @@
 
 (use-package visual-regexp
   :bind (("C-c 5" . #'vr/replace)))
-
-(use-package glsl-mode
-  :ensure t)
 
 (let ((installed (package-installed-p 'all-the-icons)))
   (use-package all-the-icons)
@@ -112,10 +95,6 @@
           doom-dark+-blue-modeline nil)
     (load-theme chosen-theme)))
 
-(use-package diminish
-  :config
-  (diminish 'visual-line-mode))
-
 (use-package mood-line
   :config
   (defun pt/mood-line-segment-project-advice (oldfun)
@@ -128,16 +107,6 @@
 
   (advice-add 'mood-line-segment-buffer-name :around #'pt/mood-line-segment-project-advice)
   (mood-line-mode))
-
-
-(use-package rainbow-delimiters
-  :disabled
-  :hook ((prog-mode . rainbow-delimiters-mode)))
-
-;; (use-package mwheel
-;;   :ensure nil
-;;   :config (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))
-;;                 mouse-wheel-progressive-speed nil))
 
 (use-package dired
   :ensure nil
@@ -158,39 +127,14 @@
         dashboard-set-footer-messages nil
         dashboard-footer-messages '("")))
 
-;; (use-package centaur-tabs
-;;   :config
-;;   (centaur-tabs-mode t)
-;;   :custom
-;;   (centaur-tabs-height 32)
-;;   (centaur-tabs-set-icons t)
-;;   (centaur-tabs-show-new-tab-button nil)
-;;   (centaur-tabs-set-close-button nil)
-;;   (centaur-tabs-enable-ido-completion nil)
-;;   (centaur-tabs-gray-out-icons t)
-;;   :bind
-;;   (("s-{" . #'centaur-tabs-backward)
-;;    ("s-}" . #'centaur-tabs-forward)))
-
-(use-package org
-  :hook ((org-mode . visual-line-mode)
-         (org-mode . org-indent-mode)))
-
-(use-package org-bullets :hook (org-mode . org-bullets-mode))
-
 ;; ----------------------- commands ----------------------- ;;
 
-(when (window-system)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tooltip-mode -1)
-  (menu-bar-mode -1)
-  (pixel-scroll-mode))
-
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(tooltip-mode -1)
+(menu-bar-mode -1)
 (delete-selection-mode t)
-(column-number-mode)
 (global-display-line-numbers-mode 1)
-
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 (add-hook 'prog-mode-hook 'hs-minor-mode)
@@ -198,9 +142,8 @@
 ;; ---------------------- appearance ---------------------- ;;
 
 (set-frame-font "Cascadia Code 11" nil t)
-
-(add-to-list 'default-frame-alist '(width . 100))
-(add-to-list 'default-frame-alist '(height . 30))
+;(add-to-list 'default-frame-alist '(width . 100))
+;(add-to-list 'default-frame-alist '(height . 30))
 
 ;; ----------------------- encoding ----------------------- ;;
 
