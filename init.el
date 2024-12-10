@@ -145,6 +145,10 @@
 ;(add-to-list 'default-frame-alist '(width . 100))
 ;(add-to-list 'default-frame-alist '(height . 30))
 
+;; --------------------- major modes --------------------- ;;
+
+(load-file "~/.emacs.d/major-modes/logisim-8bit-assembler.el")
+
 ;; ----------------------- encoding ----------------------- ;;
 
 (set-language-environment 'utf-8)
