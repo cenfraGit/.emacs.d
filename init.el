@@ -24,6 +24,9 @@
  truncate-lines t
  )
 
+(setq-default message-log-max nil)
+(kill-buffer "*Messages*")
+
 (require 'use-package)
 (setq use-package-always-ensure t)
 
