@@ -1,5 +1,6 @@
 /*
 !init.el
+!init_main.el
 !functions.el
 !.gitignore
 !major-modes
