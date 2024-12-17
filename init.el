@@ -60,3 +60,7 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
+(defun load-setup()
+  (interactive)
+  (load-file "~/.emacs.d/setup.el"))
+

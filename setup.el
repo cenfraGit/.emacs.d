@@ -81,3 +81,5 @@
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 (add-hook 'prog-mode-hook 'hs-minor-mode)
+
+(global-set-key (kbd "C-c v") 'dired-sidebar-toggle-sidebar)
