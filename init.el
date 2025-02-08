@@ -38,6 +38,7 @@
 
 (load-file "~/.emacs.d/functions.el")
 (global-set-key (kbd "C-c c") 'insert-comment-based-on-mode)
+(global-set-key (kbd "C-c d") 'insert-text-comment)
 (global-set-key (kbd "C-;") 'comment-dwim)
 (global-set-key (kbd "C-c x") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
@@ -85,37 +86,37 @@
 
 (use-package multiple-cursors)
 
-;; (setq package-check-signature nil)
+;; ;; (setq package-check-signature nil)
 
-(unless (package-installed-p 'lsp-mode)
-  (package-refresh-contents)
-  (package-install 'lsp-mode))
+;; (unless (package-installed-p 'lsp-mode)
+;;   (package-refresh-contents)
+;;   (package-install 'lsp-mode))
 
-(unless (package-installed-p 'lsp-pyright)
-  (package-refresh-contents)
-  (package-install 'lsp-pyright))
+;; (unless (package-installed-p 'lsp-pyright)
+;;   (package-refresh-contents)
+;;   (package-install 'lsp-pyright))
 
-(use-package lsp-mode
-  :ensure t
-  :hook ((python-mode . lsp-deferred))
-  :commands (lsp lsp-deferred)
-  :config
-  (setq lsp-prefer-flymake nil))
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :hook ((python-mode . lsp-deferred))
+;;   :commands (lsp lsp-deferred)
+;;   :config
+;;   (setq lsp-prefer-flymake nil))
 
-(use-package lsp-pyright
-  :ensure t
-  :after lsp-mode
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-pyright)
-                         (lsp-deferred))))
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :after lsp-mode
+;;   :hook (python-mode . (lambda ()
+;;                          (require 'lsp-pyright)
+;;                          (lsp-deferred))))
 
-(setq lsp-log-io t)
-(setq lsp-server-trace t)
+;; (setq lsp-log-io t)
+;; (setq lsp-server-trace t)
 
-(use-package tree-sitter)
-(use-package tree-sitter-langs)
-(use-package company)
-(use-package eldoc-box)
+;; (use-package tree-sitter)
+;; (use-package tree-sitter-langs)
+;; (use-package company)
+;; (use-package eldoc-box)
 
 (use-package dired-sidebar
   :ensure t
@@ -141,6 +142,36 @@
         (put 'dired-find-alternate-file 'disabled nil)
         (define-key dired-mode-map (kbd "RET") #'dired-find-alternate-file))))
 
+(use-package lsp-mode
+  :ensure t
+  :hook ((python-mode . lsp-deferred)
+         (c++-mode . lsp-deferred)
+         (c-mode . lsp-deferred))
+  :commands (lsp lsp-deferred)
+  :config
+  (setq lsp-prefer-flymake nil)
+  (setq lsp-clients-clangd-args '("--compile-commands-dir=build"))
+  )
+
+(use-package lsp-pyright
+  :ensure t
+  :after lsp-mode
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp-deferred))))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package company
+  :ensure t
+  :config
+  (add-hook 'after-init-hook 'global-company-mode))
+
+
+(setq lsp-clients-clangd-executable "/usr/bin/clangd")
+
 ;; ----------------------- commands ----------------------- ;;
 
 (global-tree-sitter-mode)
@@ -148,3 +179,16 @@
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (global-set-key (kbd "C-c v") 'dired-sidebar-toggle-sidebar)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(company-lsp lsp-ui visual-regexp tree-sitter-langs multiple-cursors mood-line lsp-pyright eldoc-box doom-themes dired-sidebar company catppuccin-theme all-the-icons-dired)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
