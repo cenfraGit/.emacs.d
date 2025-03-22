@@ -15,6 +15,11 @@
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 (load-theme 'masked t)
 
+(custom-set-faces
+ '(line-number ((t (:foreground "gray" :background "black"))))
+ '(line-number-current-line ((t (:foreground "white" :background "blue")))))
+
+
 ;; ------------------------------------------------------------
 ;; variables
 ;; ------------------------------------------------------------
@@ -152,4 +157,10 @@
 
 ;; (setq lsp-log-io t)
 ;; (setq lsp-server-trace t)
+
+(use-package disable-mouse
+  :ensure t
+  :config
+  (global-disable-mouse-mode))
+
 
