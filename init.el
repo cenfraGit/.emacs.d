@@ -50,8 +50,8 @@
   :config
   (add-hook 'after-init-hook 'global-company-mode))
 
-(use-package visual-regexp
-  :bind (("C-c 5" . #'vr/replace)))
+;; (use-package visual-regexp
+;;   :bind (("C-c 5" . #'vr/replace)))
 
 ;; (use-package lsp-mode
 ;;   :ensure t
@@ -128,7 +128,6 @@
  custom-file (expand-file-name "custom.el" user-emacs-directory)
  )
 (setq-default message-log-max nil)
-
 
 ;; ------------------------------------------------------------
 ;; commands
