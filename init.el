@@ -26,9 +26,9 @@
 ;; (setq package-check-signature nil)
 
 (use-package multiple-cursors)
-(use-package tree-sitter)
-(use-package tree-sitter-langs)
-(use-package eldoc-box)
+;; (use-package tree-sitter)
+;; (use-package tree-sitter-langs)
+;; (use-package eldoc-box)
 
 (use-package dired
   :ensure nil
@@ -45,10 +45,10 @@
   :config
   (setq neo-smart-open t))
 
-(use-package company
-  :ensure t
-  :config
-  (add-hook 'after-init-hook 'global-company-mode))
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (add-hook 'after-init-hook 'global-company-mode))
 
 ;; (use-package visual-regexp
 ;;   :bind (("C-c 5" . #'vr/replace)))
@@ -79,24 +79,18 @@
 ;;   :commands lsp-ui-mode)
 
 ;; ------------------------------------------------------------
-;; encoding
-;; ------------------------------------------------------------
-
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
-
-;; ------------------------------------------------------------
 ;; theme
 ;; ------------------------------------------------------------
 
-;; (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-;; (load-theme 'masked t)
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(load-theme 'masked t)
 
-;; (custom-set-faces
-;;  '(line-number ((t (:foreground "gray" :background "black"))))
-;;  '(line-number-current-line ((t (:foreground "white" :background "blue")))))
+(set-face-attribute 'line-number nil
+                    :foreground "#6082B6")
+
+(set-face-attribute 'line-number-current-line nil
+                    :foreground "#00A36C"
+                    :weight 'bold)
 
 ;; ------------------------------------------------------------
 ;; variables
@@ -123,8 +117,6 @@
  truncate-lines t
  tab-bar-tab-hints t
  neo-show-hidden-files t
- ;; lsp-log-io t
- ;; lsp-server-trace t
  custom-file (expand-file-name "custom.el" user-emacs-directory)
  )
 (setq-default message-log-max nil)
@@ -135,7 +127,8 @@
 
 ;; (tool-bar-mode -1)
 ;; (menu-bar-mode -1)
-;; (set-frame-font "NanumGothicCoding Bold 12" nil t)
+;; (set-frame-font "Courier" nil t)
+(setq default-frame-alist '((font . "Courier-11")))
 (global-display-line-numbers-mode 1)
 (load custom-file 'noerror 'nomessage)
 (scroll-bar-mode -1)
@@ -153,3 +146,12 @@
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+;; ------------------------------------------------------------
+;; encoding
+;; ------------------------------------------------------------
+
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)
+(set-terminal-coding-system 'utf-8-unix)
