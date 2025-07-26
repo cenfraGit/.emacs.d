@@ -21,8 +21,8 @@
 (setq package-check-signature nil)
 
 (unless (package-installed-p 'gnu-elpa-keyring-update)
-    ((package-refresh-contents)
-    (package-install 'gnu-elpa-keyring-update)))
+  (package-refresh-contents)
+  (package-install 'gnu-elpa-keyring-update))
 
 ;; --------------------------------------------------------------------------------
 ;; packages
