@@ -94,7 +94,6 @@
 
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 ;;(load-theme 'masked t)
-;;(load-theme 'spacemacs-dark t)
 
 (set-face-attribute 'line-number nil
                     :foreground "#6082B6")
@@ -128,18 +127,20 @@
  truncate-lines t
  tab-bar-tab-hints t
  neo-show-hidden-files t
+ neo-window-fixed-size nil
  custom-file (expand-file-name "custom.el" user-emacs-directory)
  )
 (setq-default message-log-max nil)
+(setq-default fill-column 100)
 
 ;; ------------------------------------------------------------
 ;; commands
 ;; ------------------------------------------------------------
 
-;; (tool-bar-mode -1)
-;; (menu-bar-mode -1)
-;; (set-frame-font "Courier" nil t)
-(setq default-frame-alist '((font . "Courier-11")))
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+;; (setq default-frame-alist '((font . "Courier-11")))
+(setq default-frame-alist '((font . "Source Code Pro-11")))
 (global-display-line-numbers-mode 1)
 (load custom-file 'noerror 'nomessage)
 (scroll-bar-mode -1)
@@ -166,3 +167,10 @@
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8-unix)
 (set-terminal-coding-system 'utf-8-unix)
+
+(cond
+ ((eq system-type 'windows-nt)
+  (setq default-directory (concat (getenv "USERPROFILE") "\\Desktop\\")))
+ ((eq system-type 'gnu/linux)
+  (setq default-directory (concat (getenv "HOME") "/Desktop/"))))
+
