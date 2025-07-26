@@ -46,9 +46,7 @@
   (package-install 'spacemacs-theme))
 
 (use-package multiple-cursors)
-;; (use-package tree-sitter)
-;; (use-package tree-sitter-langs)
-;; (use-package eldoc-box)
+(use-package eldoc-box)
 
 ;; (use-package company
 ;;   :ensure t
@@ -57,31 +55,6 @@
 
 ;; (use-package visual-regexp
 ;;   :bind (("C-c 5" . #'vr/replace)))
-
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :hook ((python-mode . lsp-deferred)
-;;          (c++-mode . lsp-deferred)
-;;          (c-mode . lsp-deferred))
-;;   :commands (lsp lsp-deferred)
-;;   :config
-;;   (setq lsp-prefer-flymake nil)
-;;   (setq lsp-clients-clangd-args '("--compile-commands-dir=build"))
-;;   (setq lsp-clients-clangd-executable
-;;         (if (eq system-type 'windows-nt)
-;;             "C:/Program Files/LLVM/bin/clangd.exe"
-;;           "/usr/bin/clangd")))
-
-;; (use-package lsp-pyright
-;;   :ensure t
-;;   :after lsp-mode
-;;   :hook (python-mode . (lambda ()
-;;                          (require 'lsp-pyright)
-;;                          (lsp-deferred))))
-
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode)
 
 ;; ------------------------------------------------------------
 ;; variables
@@ -114,6 +87,9 @@
 (setq-default message-log-max nil)
 (setq-default fill-column 100)
 
+(add-to-list 'default-frame-alist '(width . 100))
+(add-to-list 'default-frame-alist '(height . 30))
+
 (add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 
@@ -135,9 +111,6 @@
 (kill-buffer "*Messages*")
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 
-;; (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-;;(global-tree-sitter-mode)
-
 ;; functions and commands
 (load-file "~/.emacs.d/functions.el")
 (global-set-key (kbd "C-c c") 'my/insert-inline-comment-based-on-mode)
@@ -158,10 +131,10 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-(setq default-frame-alist '((font . "Source Code Pro-11")))
+;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
+(add-to-list 'default-frame-alist '(font . "Source Code Pro-11"))
 (load-theme 'spacemacs-dark t)
 
-;; (setq default-frame-alist '((font . "Courier-11")))
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
