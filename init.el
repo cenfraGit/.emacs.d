@@ -1,7 +1,7 @@
 
-;; ------------------------------------------------------------
+;; --------------------------------------------------------------------------------
 ;; package setup
-;; ------------------------------------------------------------
+;; --------------------------------------------------------------------------------
 
 (require 'use-package)
 (setq use-package-always-ensure t)
@@ -18,27 +18,11 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
-
-;; ------------------------------------------------------------
-;; packages
-;; ------------------------------------------------------------
-
 (setq package-check-signature nil)
 
-(unless (package-installed-p 'spacemacs-theme)
-  (package-refresh-contents)
-  (package-install 'spacemacs-theme))
-
-;; Load the theme
-(load-theme 'spacemacs-dark t) ;; or spacemacs-light
-
-
-
-
-(use-package multiple-cursors)
-;; (use-package tree-sitter)
-;; (use-package tree-sitter-langs)
-;; (use-package eldoc-box)
+;; --------------------------------------------------------------------------------
+;; packages
+;; --------------------------------------------------------------------------------
 
 (use-package dired
   :ensure nil
@@ -53,7 +37,18 @@
   :ensure t
   :bind (("C-c v" . neotree-toggle))
   :config
-  (setq neo-smart-open t))
+  (setq neo-smart-open t)
+  (setq neo-window-width 40))
+
+
+(unless (package-installed-p 'spacemacs-theme)
+  (package-refresh-contents)
+  (package-install 'spacemacs-theme))
+
+(use-package multiple-cursors)
+;; (use-package tree-sitter)
+;; (use-package tree-sitter-langs)
+;; (use-package eldoc-box)
 
 ;; (use-package company
 ;;   :ensure t
@@ -89,20 +84,6 @@
 ;;   :commands lsp-ui-mode)
 
 ;; ------------------------------------------------------------
-;; theme
-;; ------------------------------------------------------------
-
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-;;(load-theme 'masked t)
-
-(set-face-attribute 'line-number nil
-                    :foreground "#6082B6")
-
-(set-face-attribute 'line-number-current-line nil
-                    :foreground "#00A36C"
-                    :weight 'bold)
-
-;; ------------------------------------------------------------
 ;; variables
 ;; ------------------------------------------------------------
 
@@ -133,40 +114,7 @@
 (setq-default message-log-max nil)
 (setq-default fill-column 100)
 
-;; ------------------------------------------------------------
-;; commands
-;; ------------------------------------------------------------
-
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-;; (setq default-frame-alist '((font . "Courier-11")))
-(setq default-frame-alist '((font . "Source Code Pro-11")))
-(global-display-line-numbers-mode 1)
-(load custom-file 'noerror 'nomessage)
-(scroll-bar-mode -1)
-(tooltip-mode -1)
-(delete-selection-mode t)
-(kill-buffer "*Messages*")
-(add-hook 'prog-mode-hook 'hs-minor-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-;;(global-tree-sitter-mode)
-(load-file "~/.emacs.d/functions.el")
-(global-set-key (kbd "C-c c") 'insert-comment-based-on-mode)
-(global-set-key (kbd "C-c d") 'insert-text-comment)
-(global-set-key (kbd "C-;") 'comment-dwim)
-(global-set-key (kbd "C-c x") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-;; ------------------------------------------------------------
-;; encoding
-;; ------------------------------------------------------------
-
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 
 (cond
  ((eq system-type 'windows-nt)
@@ -174,3 +122,48 @@
  ((eq system-type 'gnu/linux)
   (setq default-directory (concat (getenv "HOME") "/Desktop/"))))
 
+;; ------------------------------------------------------------
+;; commands
+;; ------------------------------------------------------------
+
+(global-display-line-numbers-mode 1)
+(load custom-file 'noerror 'nomessage)
+(scroll-bar-mode -1)
+(tooltip-mode -1)
+(delete-selection-mode t)
+(kill-buffer "*Messages*")
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+
+;; (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;(global-tree-sitter-mode)
+
+;; functions and commands
+(load-file "~/.emacs.d/functions.el")
+(global-set-key (kbd "C-c c") 'my/insert-inline-comment-based-on-mode)
+(global-set-key (kbd "C-c d") 'my/insert-block-comment)
+(global-set-key (kbd "C-;") 'comment-dwim)
+(global-set-key (kbd "C-c x") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+;; encoding
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)
+(set-terminal-coding-system 'utf-8-unix)
+
+;; --------------------------------------------------------------------------------
+;; appearance
+;; --------------------------------------------------------------------------------
+
+(setq default-frame-alist '((font . "Source Code Pro-11")))
+(load-theme 'spacemacs-dark t)
+
+;; (setq default-frame-alist '((font . "Courier-11")))
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+;;(load-theme 'masked t)
+;; (set-face-attribute 'line-number nil :foreground "#6082B6")
+;; (set-face-attribute 'line-number-current-line nil :foreground "#00A36C" :weight 'bold)
