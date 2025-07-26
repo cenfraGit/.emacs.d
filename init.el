@@ -18,7 +18,7 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
-(setq package-check-signature nil)
+;; (setq package-check-signature nil)
 
 ;; --------------------------------------------------------------------------------
 ;; packages
@@ -114,6 +114,7 @@
 (setq-default message-log-max nil)
 (setq-default fill-column 100)
 
+(add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 
 (cond
