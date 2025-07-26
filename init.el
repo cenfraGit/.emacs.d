@@ -18,7 +18,12 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
-;; (setq package-check-signature nil)
+
+(unless (package-installed-p 'gnu-elpa-keyring-update)
+  (let ((package-check-signature nil))
+    (package-refresh-contents)
+    (package-install 'gnu-elpa-keyring-update)))
+(setq package-check-signature t)
 
 ;; --------------------------------------------------------------------------------
 ;; packages
