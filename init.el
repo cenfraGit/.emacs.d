@@ -23,7 +23,17 @@
 ;; packages
 ;; ------------------------------------------------------------
 
-;; (setq package-check-signature nil)
+(setq package-check-signature nil)
+
+(unless (package-installed-p 'spacemacs-theme)
+  (package-refresh-contents)
+  (package-install 'spacemacs-theme))
+
+;; Load the theme
+(load-theme 'spacemacs-dark t) ;; or spacemacs-light
+
+
+
 
 (use-package multiple-cursors)
 ;; (use-package tree-sitter)
@@ -83,7 +93,8 @@
 ;; ------------------------------------------------------------
 
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-(load-theme 'masked t)
+;;(load-theme 'masked t)
+;;(load-theme 'spacemacs-dark t)
 
 (set-face-attribute 'line-number nil
                     :foreground "#6082B6")
@@ -137,7 +148,7 @@
 (kill-buffer "*Messages*")
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-(global-tree-sitter-mode)
+;;(global-tree-sitter-mode)
 (load-file "~/.emacs.d/functions.el")
 (global-set-key (kbd "C-c c") 'insert-comment-based-on-mode)
 (global-set-key (kbd "C-c d") 'insert-text-comment)
