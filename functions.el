@@ -42,7 +42,7 @@
                   (t "// "))))
     (insert (concat prefix line "\n"
                     prefix word "\n"
-                    prefix line "\n"))))
+                    prefix line))))
 
 ;; --------------------------------------------------------------------------------
 ;; latex functions
