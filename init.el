@@ -59,6 +59,7 @@
 
 ;; (use-package visual-regexp
 ;;   :bind (("C-c 5" . #'vr/replace)))
+(global-set-key (kbd "C-c 5") #'search-forward-regexp)
 
 ;; ------------------------------------------------------------
 ;; variables
@@ -130,6 +131,18 @@
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8-unix)
 (set-terminal-coding-system 'utf-8-unix)
+
+;; csharp
+(defun csharp-mode-setup ()
+  (setq c-basic-offset 4)
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil))
+(add-hook 'csharp-mode-hook 'csharp-mode-setup)
+(defun xml-mode-setup ()
+  (setq c-basic-offset 4)
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil))
+(add-hook 'xml-mode-hook 'xaml-mode-setup)
 
 ;; --------------------------------------------------------------------------------
 ;; appearance
