@@ -66,3 +66,9 @@
   (insert "\\begin{itemize}\n\\item \n\\end{itemize}")
   (forward-line -1)
   (end-of-line))
+
+(defun latex-example ()
+  (interactive)
+  (insert "\\begin{example}\n\n\\end{example}")
+  (forward-line -1)
+  (end-of-line))
