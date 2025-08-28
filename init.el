@@ -126,12 +126,6 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-;; encoding
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
-
 ;; csharp
 (defun csharp-mode-setup ()
   (setq c-basic-offset 4)
@@ -143,6 +137,18 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 (add-hook 'xml-mode-hook 'xaml-mode-setup)
+
+;; latex
+(add-hook 'latex-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c l") 'latex-insert-block)
+	    (local-set-key (kbd "C-c p") 'latex-codeblock)))
+
+;; encoding
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)
+(set-terminal-coding-system 'utf-8-unix)
 
 ;; --------------------------------------------------------------------------------
 ;; appearance

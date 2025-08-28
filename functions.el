@@ -54,21 +54,3 @@
         (number (read-string "Line number: ")))
     (insert (format "\\begin{codeblock}{%s}{%s}\n\n\\end{codeblock}" language number))
     (forward-line -1)))
-
-(defun latex-enumerate ()
-  (interactive)
-  (insert "\\begin{enumerate}\n\\item \n\\end{enumerate}")
-  (forward-line -1)
-  (end-of-line))
-
-(defun latex-itemize ()
-  (interactive)
-  (insert "\\begin{itemize}\n\\item \n\\end{itemize}")
-  (forward-line -1)
-  (end-of-line))
-
-(defun latex-example ()
-  (interactive)
-  (insert "\\begin{example}\n\n\\end{example}")
-  (forward-line -1)
-  (end-of-line))
