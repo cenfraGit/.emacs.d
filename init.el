@@ -50,12 +50,7 @@
   (package-install 'spacemacs-theme))
 
 (use-package multiple-cursors)
-(use-package eldoc-box)
-
-;; (use-package company
-;;   :ensure t
-;;   :config
-;;   (add-hook 'after-init-hook 'global-company-mode))
+;; (use-package eldoc-box)
 
 ;; (use-package visual-regexp
 ;;   :bind (("C-c 5" . #'vr/replace)))
@@ -103,6 +98,7 @@
   (setq default-directory (concat (getenv "USERPROFILE") "\\Desktop\\")))
  ((eq system-type 'gnu/linux)
   (setq default-directory (concat (getenv "HOME") "/Desktop/"))))
+(put 'downcase-region 'disabled nil)
 
 ;; ------------------------------------------------------------
 ;; commands
@@ -156,11 +152,16 @@
 
 ;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
 (add-to-list 'default-frame-alist '(font . "Source Code Pro-11"))
-(load-theme 'spacemacs-dark t)
+;; (load-theme 'spacemacs-dark t)
+;; (load-theme 'adwaita t)
+;; (load-theme 'wheatgrass t)
+(load-theme 'modus-vivendi-tinted t)
+;; (load-theme 'leuven t)
 
-(tool-bar-mode -1)
-(menu-bar-mode -1)
+;; (tool-bar-mode -1)
+;; (menu-bar-mode -1)
 
-;;(load-theme 'masked t)
+;; (load-theme 'masked t)
 ;; (set-face-attribute 'line-number nil :foreground "#6082B6")
 ;; (set-face-attribute 'line-number-current-line nil :foreground "#00A36C" :weight 'bold)
+
