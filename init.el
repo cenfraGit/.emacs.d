@@ -83,9 +83,10 @@
  neo-show-hidden-files t
  neo-window-fixed-size nil
  custom-file (expand-file-name "custom.el" user-emacs-directory)
+org-startup-with-inline-images t
  )
 (setq-default message-log-max nil)
-(setq-default fill-column 100)
+(setq-default fill-column 60) ; 100
 
 (add-to-list 'default-frame-alist '(width . 100))
 (add-to-list 'default-frame-alist '(height . 30))
@@ -146,16 +147,27 @@
 (set-keyboard-coding-system 'utf-8-unix)
 (set-terminal-coding-system 'utf-8-unix)
 
+;; file updates
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
 ;; --------------------------------------------------------------------------------
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
 ;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
-(add-to-list 'default-frame-alist '(font . "Source Code Pro-11"))
+;; (add-to-list 'default-frame-alist '(font . "Courier New-11"))
+;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
+(add-to-list 'default-frame-alist '(font . "Iosevka-11"))
 ;; (load-theme 'spacemacs-dark t)
 ;; (load-theme 'adwaita t)
 ;; (load-theme 'wheatgrass t)
-(load-theme 'modus-vivendi-tinted t)
+(load-theme 'modus-vivendi-tritanopia t)
+;; (load-theme 'modus-vivendi-tinted t)
+;; (load-theme 'deeper-blue t)
+;; (load-theme 'wombat t)
+;; (load-theme 'masked t)
 ;; (load-theme 'leuven t)
 
 ;; (tool-bar-mode -1)
