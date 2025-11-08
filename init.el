@@ -37,24 +37,31 @@
         (put 'dired-find-alternate-file 'disabled nil)
         (define-key dired-mode-map (kbd "RET") #'dired-find-alternate-file))))
 
-(use-package neotree
-  :ensure t
-  :bind (("C-c v" . neotree-toggle))
-  :config
-  (setq neo-smart-open t)
-  (setq neo-window-width 40))
-
-
-(unless (package-installed-p 'spacemacs-theme)
-  (package-refresh-contents)
-  (package-install 'spacemacs-theme))
-
 (use-package multiple-cursors)
 ;; (use-package eldoc-box)
 
 ;; (use-package visual-regexp
 ;;   :bind (("C-c 5" . #'vr/replace)))
 (global-set-key (kbd "C-c 5") #'search-forward-regexp)
+
+(use-package company
+  :hook (after-init . global-company-mode)
+  :custom
+  (company-idle-delay 0.2)
+  (company-minimum-prefix-length 1)
+  (company-tooltip-align-annotations t))
+
+(use-package magit
+  :commands (magit-status magit-get-current-branch)
+  :config
+  (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+(use-package treemacs
+  :defer t
+  :config
+  :bind (("C-c v" . treemacs)))
+
+(package-install 'plantuml-mode)
 
 ;; ------------------------------------------------------------
 ;; variables
@@ -91,7 +98,6 @@ org-startup-with-inline-images t
 (add-to-list 'default-frame-alist '(width . 100))
 (add-to-list 'default-frame-alist '(height . 30))
 
-(add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
 (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 
 (cond
@@ -100,6 +106,8 @@ org-startup-with-inline-images t
  ((eq system-type 'gnu/linux)
   (setq default-directory (concat (getenv "HOME") "/Desktop/"))))
 (put 'downcase-region 'disabled nil)
+
+(setq exec-path (split-string (getenv "PATH") ";" t))
 
 ;; ------------------------------------------------------------
 ;; commands
@@ -129,6 +137,7 @@ org-startup-with-inline-images t
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 (add-hook 'csharp-mode-hook 'csharp-mode-setup)
+(add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
 (defun xml-mode-setup ()
   (setq c-basic-offset 4)
   (setq tab-width 4)
@@ -152,28 +161,19 @@ org-startup-with-inline-images t
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
 
+;; plantuml
+(setq plantuml-indent-level 0)
+
 ;; --------------------------------------------------------------------------------
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
 ;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
-;; (add-to-list 'default-frame-alist '(font . "Courier New-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
 (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
-;; (load-theme 'spacemacs-dark t)
-;; (load-theme 'adwaita t)
-;; (load-theme 'wheatgrass t)
-(load-theme 'modus-vivendi-tritanopia t)
-;; (load-theme 'modus-vivendi-tinted t)
-;; (load-theme 'deeper-blue t)
-;; (load-theme 'wombat t)
-;; (load-theme 'masked t)
 ;; (load-theme 'leuven t)
+;; (load-theme 'spacemacs-dark t)
+(load-theme 'modus-vivendi-tritanopia t)
 
-;; (tool-bar-mode -1)
-;; (menu-bar-mode -1)
-
-;; (load-theme 'masked t)
-;; (set-face-attribute 'line-number nil :foreground "#6082B6")
-;; (set-face-attribute 'line-number-current-line nil :foreground "#00A36C" :weight 'bold)
-
+(tool-bar-mode -1)
+(menu-bar-mode -1)
