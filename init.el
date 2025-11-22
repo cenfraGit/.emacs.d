@@ -51,6 +51,8 @@
   (company-minimum-prefix-length 1)
   (company-tooltip-align-annotations t))
 
+(add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
+
 (use-package magit
   :commands (magit-status magit-get-current-branch)
   :config
@@ -62,6 +64,17 @@
   :bind (("C-c v" . treemacs)))
 
 (package-install 'plantuml-mode)
+
+(use-package doom-themes
+  :ensure t
+  :custom
+  (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+  (doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (doom-themes-treemacs-theme "doom-atom") ; treemacs, use "doom-colors" for less minimal icon theme
+  :config
+  (load-theme 'doom-one t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
 
 ;; ------------------------------------------------------------
 ;; variables
@@ -114,6 +127,7 @@ org-startup-with-inline-images t
 ;; ------------------------------------------------------------
 
 (global-display-line-numbers-mode 1)
+(global-visual-line-mode 1)
 (load custom-file 'noerror 'nomessage)
 (scroll-bar-mode -1)
 (tooltip-mode -1)
@@ -161,19 +175,17 @@ org-startup-with-inline-images t
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
 
-;; plantuml
-(setq plantuml-indent-level 0)
-
 ;; --------------------------------------------------------------------------------
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
 ;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
-;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
-(add-to-list 'default-frame-alist '(font . "Iosevka-11"))
+;; (add-to-list 'default-frame-alist '(font . "Cascadia Mono-11"))
+(add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
+;; (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
 ;; (load-theme 'leuven t)
 ;; (load-theme 'spacemacs-dark t)
-(load-theme 'modus-vivendi-tritanopia t)
+;; (load-theme 'modus-vivendi-tritanopia t)
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
