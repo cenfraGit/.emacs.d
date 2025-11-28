@@ -1,4 +1,3 @@
-
 ;; --------------------------------------------------------------------------------
 ;; package setup
 ;; --------------------------------------------------------------------------------
@@ -68,11 +67,10 @@
 (use-package doom-themes
   :ensure t
   :custom
-  (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
-  (doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (doom-themes-treemacs-theme "doom-atom") ; treemacs, use "doom-colors" for less minimal icon theme
+  (doom-themes-enable-bold t)
+  (doom-themes-enable-italic t)
+  (doom-themes-treemacs-theme "doom-atom")
   :config
-  (load-theme 'doom-one t)
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
@@ -80,7 +78,7 @@
 ;; variables
 ;; ------------------------------------------------------------
 
-(setq
+(setq-default
  native-comp-speed 3
  native-comp-async-report-warnings-errors nil
  inhibit-startup-message t
@@ -107,11 +105,16 @@ org-startup-with-inline-images t
  )
 (setq-default message-log-max nil)
 (setq-default fill-column 60) ; 100
+(setq-default indent-tabs-mode nil)
+(setq-default whitespace-line-column 100)
+
 
 (add-to-list 'default-frame-alist '(width . 100))
 (add-to-list 'default-frame-alist '(height . 30))
 
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'custom-theme-load-path (expand-file-name
+                                      "themes"
+                                      user-emacs-directory))
 
 (cond
  ((eq system-type 'windows-nt)
@@ -128,6 +131,7 @@ org-startup-with-inline-images t
 
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode 1)
+(global-whitespace-mode 1)
 (load custom-file 'noerror 'nomessage)
 (scroll-bar-mode -1)
 (tooltip-mode -1)
@@ -144,6 +148,7 @@ org-startup-with-inline-images t
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-c C-c") 'whitespace-cleanup)
 
 ;; csharp
 (defun csharp-mode-setup ()
@@ -181,11 +186,13 @@ org-startup-with-inline-images t
 
 ;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Cascadia Mono-11"))
-(add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
+(add-to-list 'default-frame-alist '(font . "Lucida Console-11"))
+;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
-;; (load-theme 'leuven t)
 ;; (load-theme 'spacemacs-dark t)
 ;; (load-theme 'modus-vivendi-tritanopia t)
+;; (load-theme 'doom-one t)
+(load-theme 'leuven t)
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
