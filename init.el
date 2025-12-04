@@ -37,11 +37,6 @@
         (define-key dired-mode-map (kbd "RET") #'dired-find-alternate-file))))
 
 (use-package multiple-cursors)
-;; (use-package eldoc-box)
-
-;; (use-package visual-regexp
-;;   :bind (("C-c 5" . #'vr/replace)))
-(global-set-key (kbd "C-c 5") #'search-forward-regexp)
 
 (use-package company
   :hook (after-init . global-company-mode)
@@ -49,8 +44,6 @@
   (company-idle-delay 0.2)
   (company-minimum-prefix-length 1)
   (company-tooltip-align-annotations t))
-
-(add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
 (use-package magit
   :commands (magit-status magit-get-current-branch)
@@ -62,7 +55,7 @@
   :config
   :bind (("C-c v" . treemacs)))
 
-(package-install 'plantuml-mode)
+;(package-install 'plantuml-mode)
 
 (use-package doom-themes
   :ensure t
@@ -74,9 +67,9 @@
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
-;; ------------------------------------------------------------
+;; --------------------------------------------------------------------------------
 ;; variables
-;; ------------------------------------------------------------
+;; --------------------------------------------------------------------------------
 
 (setq-default
  native-comp-speed 3
@@ -101,20 +94,14 @@
  neo-show-hidden-files t
  neo-window-fixed-size nil
  custom-file (expand-file-name "custom.el" user-emacs-directory)
-org-startup-with-inline-images t
+ org-startup-with-inline-images t
+ message-log-max nil
+ fill-column 80
+ whitespace-line-column 80
+ indent-tabs-mode nil
+ global-auto-revert-non-file-buffers t
+ auto-revert-verbose nil
  )
-(setq-default message-log-max nil)
-(setq-default fill-column 60) ; 100
-(setq-default indent-tabs-mode nil)
-(setq-default whitespace-line-column 100)
-
-
-(add-to-list 'default-frame-alist '(width . 100))
-(add-to-list 'default-frame-alist '(height . 30))
-
-(add-to-list 'custom-theme-load-path (expand-file-name
-                                      "themes"
-                                      user-emacs-directory))
 
 (cond
  ((eq system-type 'windows-nt)
@@ -125,19 +112,40 @@ org-startup-with-inline-images t
 
 (setq exec-path (split-string (getenv "PATH") ";" t))
 
-;; ------------------------------------------------------------
-;; commands
-;; ------------------------------------------------------------
 
+
+
+(add-to-list 'default-frame-alist '(width . 100))
+(add-to-list 'default-frame-alist '(height . 30))
+
+(add-to-list 'custom-theme-load-path (expand-file-name
+                                      "themes"
+                                      user-emacs-directory))
+
+;; --------------------------------------------------------------------------------
+;; commands
+;; --------------------------------------------------------------------------------
+
+(load custom-file 'noerror 'nomessage)
+(kill-buffer "*Messages*")
+
+;; modes
 (global-display-line-numbers-mode 1)
+(global-auto-revert-mode 1)
 (global-visual-line-mode 1)
 (global-whitespace-mode 1)
-(load custom-file 'noerror 'nomessage)
 (scroll-bar-mode -1)
 (tooltip-mode -1)
 (delete-selection-mode t)
-(kill-buffer "*Messages*")
-(add-hook 'prog-mode-hook 'hs-minor-mode)
+
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+;; encoding
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)
+(set-terminal-coding-system 'utf-8-unix)
 
 ;; functions and commands
 (load-file "~/.emacs.d/functions.el")
@@ -148,51 +156,45 @@ org-startup-with-inline-images t
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-c C-c") 'whitespace-cleanup)
+(global-set-key (kbd "C-c 5") #'search-forward-regexp)
 
 ;; csharp
 (defun csharp-mode-setup ()
   (setq c-basic-offset 4)
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
-(add-hook 'csharp-mode-hook 'csharp-mode-setup)
-(add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
+
 (defun xml-mode-setup ()
   (setq c-basic-offset 4)
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
+
+;; --------------------------------------------------------------------------------
+;; hooks
+;; --------------------------------------------------------------------------------
+
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+(add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
+
+(add-hook 'csharp-mode-hook 'csharp-mode-setup)
+(add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
 (add-hook 'xml-mode-hook 'xaml-mode-setup)
 
-;; latex
 (add-hook 'latex-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "C-c l") 'latex-insert-block)
-	    (local-set-key (kbd "C-c p") 'latex-codeblock)))
-
-;; encoding
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
-
-;; file updates
-(global-auto-revert-mode 1)
-(setq global-auto-revert-non-file-buffers t)
-(setq auto-revert-verbose nil)
+          (lambda ()
+            (local-set-key (kbd "C-c l") 'latex-insert-block)
+            (local-set-key (kbd "C-c p") 'latex-codeblock)))
 
 ;; --------------------------------------------------------------------------------
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
+;; (load-theme 'doom-Iosvkem t)
+;; (load-theme 'spacemacs-dark t)
+;; (load-theme 'leuven t)
+
+(add-to-list 'default-frame-alist '(font . "Courier-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Cascadia Mono-11"))
-(add-to-list 'default-frame-alist '(font . "Lucida Console-11"))
+;; (add-to-list 'default-frame-alist '(font . "Lucida Console-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
-;; (load-theme 'spacemacs-dark t)
-;; (load-theme 'modus-vivendi-tritanopia t)
-;; (load-theme 'doom-one t)
-(load-theme 'leuven t)
-
-(tool-bar-mode -1)
-(menu-bar-mode -1)
