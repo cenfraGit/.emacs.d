@@ -23,6 +23,9 @@
   (package-refresh-contents)
   (package-install 'gnu-elpa-keyring-update))
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
 ;; --------------------------------------------------------------------------------
 ;; packages
 ;; --------------------------------------------------------------------------------
@@ -54,6 +57,7 @@
   :defer t
   :config
   :bind (("C-c v" . treemacs)))
+(setq treemacs-width 55)
 
 ;(package-install 'plantuml-mode)
 
@@ -62,10 +66,25 @@
   :custom
   (doom-themes-enable-bold t)
   (doom-themes-enable-italic t)
-  (doom-themes-treemacs-theme "doom-atom")
+  (doom-themes-treemacs-theme "doom-Iosvkem")
   :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
+
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((csharp-mode . lsp-deferred))
+  :commands lsp lsp-deferred)
+
+(use-package lsp-ui
+  :ensure t
+  :config
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-show-with-cursor t)
+  (setq lsp-ui-doc-position 'at-point)
+  :hook (lsp-mode . lsp-ui-mode)
+  )
 
 ;; --------------------------------------------------------------------------------
 ;; variables
@@ -77,7 +96,7 @@
  inhibit-startup-message t
  initial-scratch-message nil
  ring-bell-function 'ignore
- visible-bell nil
+ visible-bell t
  use-dialog-box nil
  use-short-answers t
  case-fold-search nil
@@ -96,8 +115,8 @@
  custom-file (expand-file-name "custom.el" user-emacs-directory)
  org-startup-with-inline-images t
  message-log-max nil
- fill-column 80
- whitespace-line-column 80
+ fill-column 130
+ whitespace-line-column 130
  indent-tabs-mode nil
  global-auto-revert-non-file-buffers t
  auto-revert-verbose nil
@@ -112,9 +131,6 @@
 
 (setq exec-path (split-string (getenv "PATH") ";" t))
 
-
-
-
 (add-to-list 'default-frame-alist '(width . 100))
 (add-to-list 'default-frame-alist '(height . 30))
 
@@ -127,7 +143,9 @@
 ;; --------------------------------------------------------------------------------
 
 (load custom-file 'noerror 'nomessage)
-(kill-buffer "*Messages*")
+(let ((buffer-name "*Messages*"))
+ (when (get-buffer buffer-name)
+   (kill-buffer buffer-name)))
 
 ;; modes
 (global-display-line-numbers-mode 1)
@@ -189,12 +207,12 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-;; (load-theme 'doom-Iosvkem t)
+(load-theme 'doom-Iosvkem t)
 ;; (load-theme 'spacemacs-dark t)
 ;; (load-theme 'leuven t)
 
-(add-to-list 'default-frame-alist '(font . "Courier-11"))
+;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Cascadia Mono-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Lucida Console-11"))
 ;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
-;; (add-to-list 'default-frame-alist '(font . "Iosevka-11"))
+(add-to-list 'default-frame-alist '(font . "Iosevka-11"))
