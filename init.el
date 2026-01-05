@@ -57,9 +57,7 @@
   :defer t
   :config
   :bind (("C-c v" . treemacs)))
-(setq treemacs-width 55)
-
-;(package-install 'plantuml-mode)
+(setq treemacs-width 42)
 
 (use-package doom-themes
   :ensure t
@@ -83,8 +81,7 @@
   (setq lsp-ui-doc-enable t)
   (setq lsp-ui-doc-show-with-cursor t)
   (setq lsp-ui-doc-position 'at-point)
-  :hook (lsp-mode . lsp-ui-mode)
-  )
+  :hook (lsp-mode . lsp-ui-mode))
 
 ;; --------------------------------------------------------------------------------
 ;; variables
@@ -120,6 +117,10 @@
  indent-tabs-mode nil
  global-auto-revert-non-file-buffers t
  auto-revert-verbose nil
+ nxml-child-indent 4
+ nxml-attribute-indent 4
+ lsp-enable-file-watchers t
+ lsp-file-watch-threshold nil
  )
 
 (cond
@@ -144,14 +145,15 @@
 
 (load custom-file 'noerror 'nomessage)
 (let ((buffer-name "*Messages*"))
- (when (get-buffer buffer-name)
-   (kill-buffer buffer-name)))
+  (when (get-buffer buffer-name)
+    (kill-buffer buffer-name)))
 
 ;; modes
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
 (global-whitespace-mode 1)
+(setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
 (scroll-bar-mode -1)
 (tooltip-mode -1)
 (delete-selection-mode t)
@@ -182,11 +184,6 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 
-(defun xml-mode-setup ()
-  (setq c-basic-offset 4)
-  (setq tab-width 4)
-  (setq indent-tabs-mode nil))
-
 ;; --------------------------------------------------------------------------------
 ;; hooks
 ;; --------------------------------------------------------------------------------
@@ -195,8 +192,7 @@
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
 (add-hook 'csharp-mode-hook 'csharp-mode-setup)
-(add-to-list 'auto-mode-alist '("\\.xaml\\'" . xml-mode))
-(add-hook 'xml-mode-hook 'xaml-mode-setup)
+(add-to-list 'auto-mode-alist '("\\.xaml\\'" . nxml-mode))
 
 (add-hook 'latex-mode-hook
           (lambda ()
@@ -207,12 +203,17 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-(load-theme 'doom-Iosvkem t)
+;; (load-theme 'doom-Iosvkem t)
 ;; (load-theme 'spacemacs-dark t)
-;; (load-theme 'leuven t)
+(load-theme 'leuven t)
 
-;; (add-to-list 'default-frame-alist '(font . "Courier-11"))
-;; (add-to-list 'default-frame-alist '(font . "Cascadia Mono-11"))
-;; (add-to-list 'default-frame-alist '(font . "Lucida Console-11"))
-;; (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-10"))
-(add-to-list 'default-frame-alist '(font . "Iosevka-11"))
+;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
+(add-to-list 'default-frame-alist '(font . "Cascadia Mono-10"))
+;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
+;; (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
+
+;; --------------------------------------------------------------------------------
+;; start in org mode (daemon)
+;; --------------------------------------------------------------------------------
+
+(org-mode)
