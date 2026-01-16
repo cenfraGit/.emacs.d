@@ -149,11 +149,11 @@
     (kill-buffer buffer-name)))
 
 ;; modes
+;; (global-whitespace-mode 1)
+;; (setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
-(global-whitespace-mode 1)
-(setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
 (scroll-bar-mode -1)
 (tooltip-mode -1)
 (delete-selection-mode t)
@@ -203,13 +203,13 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
+(load-theme 'doom-acario-dark t)
 ;; (load-theme 'doom-Iosvkem t)
 ;; (load-theme 'spacemacs-dark t)
-(load-theme 'leuven t)
+;; (load-theme 'leuven t)
 
 ;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
-(add-to-list 'default-frame-alist '(font . "Cascadia Mono-10"))
-;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
+(add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
 
 ;; --------------------------------------------------------------------------------
