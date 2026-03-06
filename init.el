@@ -130,8 +130,8 @@
     (kill-buffer buffer-name)))
 
 ;; modes
-;; (global-whitespace-mode 1)
-;; (setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
+(global-whitespace-mode 1)
+(setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
@@ -184,18 +184,19 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-(load-theme 'doom-acario-dark t)
+;; (load-theme 'doom-acario-dark t)
 ;; (load-theme 'doom-Iosvkem t)
 ;; (load-theme 'spacemacs-dark t)
-;; (load-theme 'leuven t)
+(load-theme 'leuven t)
 
 ;; --------------------------------------------------------------------------------
 ;; text
 ;; --------------------------------------------------------------------------------
 
-(add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
+;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
+(add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
 
 ;; encoding
 (set-language-environment 'utf-8)
