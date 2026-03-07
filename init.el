@@ -1,7 +1,3 @@
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-
 (setq gc-cons-threshold (* 50 1024 1024))
 (add-hook 'emacs-startup-hook
           (lambda ()
@@ -115,7 +111,7 @@
   (setq default-directory (concat (getenv "HOME") "/Desktop/"))))
 (put 'downcase-region 'disabled nil)
 
-(setq exec-path (split-string (getenv "PATH") ";" t))
+;; (setq exec-path (split-string (getenv "PATH") ";" t))
 
 (add-to-list 'default-frame-alist '(width . 100))
 (add-to-list 'default-frame-alist '(height . 30))
@@ -130,8 +126,8 @@
     (kill-buffer buffer-name)))
 
 ;; modes
-(global-whitespace-mode 1)
-(setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
+;; (global-whitespace-mode 1)
+;; (setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
@@ -139,8 +135,8 @@
 (delete-selection-mode t)
 (tooltip-mode -1)
 
-;; (tool-bar-mode -1)
-;; (menu-bar-mode -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
 
 ;; functions and commands
 (load-file "~/.emacs.d/functions.el")
@@ -154,16 +150,16 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 
-(define-generic-mode 'deltascript-mode
-  '("//" ("/*" . "*/"))
-  '("if" "else" "while" "break"
-    "continue" "func" "return")
-  '(("\\([a-zA-Z_][a-zA-Z0-9_]*\\)(" . (1 font-lock-function-name-face))
-    ("\\b[0-9]+\\(\\.[0-9]+\\)?\\b" . font-lock-constant-face)
-    ("=>" . font-lock-keyword-face))
-  '("\\.ds$")
-  nil
-  "Major mode for DeltaScript files.")
+;; (define-generic-mode 'deltascript-mode
+;;   '("//" ("/*" . "*/"))
+;;   '("if" "else" "while" "break"
+;;     "continue" "func" "return")
+;;   '(("\\([a-zA-Z_][a-zA-Z0-9_]*\\)(" . (1 font-lock-function-name-face))
+;;     ("\\b[0-9]+\\(\\.[0-9]+\\)?\\b" . font-lock-constant-face)
+;;     ("=>" . font-lock-keyword-face))
+;;   '("\\.ds$")
+;;   nil
+;;   "Major mode for DeltaScript files.")
 
 ;; --------------------------------------------------------------------------------
 ;; hooks
@@ -184,10 +180,10 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-;; (load-theme 'doom-acario-dark t)
+(load-theme 'doom-acario-dark t)
 ;; (load-theme 'doom-Iosvkem t)
 ;; (load-theme 'spacemacs-dark t)
-(load-theme 'leuven t)
+;; (load-theme 'leuven t)
 
 ;; --------------------------------------------------------------------------------
 ;; text
@@ -196,7 +192,8 @@
 ;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
-(add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
+;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
+(add-to-list 'default-frame-alist '(font . "SourceCodePro-10"))
 
 ;; encoding
 (set-language-environment 'utf-8)
