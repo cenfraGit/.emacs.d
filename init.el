@@ -193,7 +193,15 @@
 ;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
-(add-to-list 'default-frame-alist '(font . "SourceCodePro-10"))
+
+
+(cond
+ ((eq system-type 'windows-nt)
+  (add-to-list 'default-frame-alist '(font . "Cascadia Code-10")))
+ ((eq system-type 'gnu/linux)
+  (add-to-list 'default-frame-alist '(font . "SourceCodePro-16"))
+  )
+)
 
 ;; encoding
 (set-language-environment 'utf-8)
