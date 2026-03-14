@@ -125,9 +125,11 @@
   (when (get-buffer buffer-name)
     (kill-buffer buffer-name)))
 
+;; whitespace mode config
+(setq whitespace-style '(face tabs trailing empty))
+(global-whitespace-mode 1)
+
 ;; modes
-;; (global-whitespace-mode 1)
-;; (setq whitespace-style (delq 'lines-tail (delq 'lines whitespace-style)))
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
@@ -150,6 +152,7 @@
   (setq tab-width 4)
   (setq indent-tabs-mode nil))
 
+;; delta script
 ;; (define-generic-mode 'deltascript-mode
 ;;   '("//" ("/*" . "*/"))
 ;;   '("if" "else" "while" "break"
@@ -160,6 +163,13 @@
 ;;   '("\\.ds$")
 ;;   nil
 ;;   "Major mode for DeltaScript files.")
+
+(with-eval-after-load 'treemacs
+  (add-to-list 'treemacs-ignored-file-predicates 'my-treemacs-ignore-hidden-dirs)
+  (defun my-treemacs-ignore-hidden-dirs (filename absolute-path)
+    (or (string-match-p "/bin" absolute-path)
+        (string-match-p "/obj" absolute-path)
+        )))
 
 ;; --------------------------------------------------------------------------------
 ;; hooks
@@ -182,26 +192,15 @@
 
 (load-theme 'doom-acario-dark t)
 ;; (load-theme 'doom-Iosvkem t)
-;; (load-theme 'spacemacs-dark t)
 ;; (load-theme 'leuven t)
 
 ;; --------------------------------------------------------------------------------
 ;; text
 ;; --------------------------------------------------------------------------------
 
-;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
+(add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
-;; (add-to-list 'default-frame-alist '(font . "Iosevka-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
-
-
-(cond
- ((eq system-type 'windows-nt)
-  (add-to-list 'default-frame-alist '(font . "Cascadia Code-10")))
- ((eq system-type 'gnu/linux)
-  (add-to-list 'default-frame-alist '(font . "SourceCodePro-16"))
-  )
-)
 
 ;; encoding
 (set-language-environment 'utf-8)
