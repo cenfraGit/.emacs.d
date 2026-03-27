@@ -179,7 +179,7 @@
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
 (add-hook 'csharp-mode-hook 'csharp-mode-setup)
-(add-to-list 'auto-mode-alist '("\\.xaml\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
 
 (add-hook 'latex-mode-hook
           (lambda ()
@@ -190,9 +190,12 @@
 ;; appearance
 ;; --------------------------------------------------------------------------------
 
-(load-theme 'doom-acario-dark t)
+;; (load-theme 'doom-acario-dark t)
 ;; (load-theme 'doom-Iosvkem t)
 ;; (load-theme 'leuven t)
+
+;; (load-theme 'modus-vivendi-tinted t)
+(load-theme 'doom-opera t)
 
 ;; --------------------------------------------------------------------------------
 ;; text
