@@ -51,7 +51,7 @@
 
 (use-package treemacs
   :defer t
-  :init (setq treemacs-width 42)
+  :init (setq treemacs-width 50)
   :bind (("C-c v" . treemacs)))
 
 (use-package doom-themes
@@ -126,7 +126,7 @@
     (kill-buffer buffer-name)))
 
 ;; whitespace mode config
-(setq whitespace-style '(face tabs trailing empty))
+(setq whitespace-style '(face tabs trailing empty tab-mark))
 (global-whitespace-mode 1)
 
 ;; modes
@@ -191,19 +191,17 @@
 ;; --------------------------------------------------------------------------------
 
 ;; (load-theme 'doom-acario-dark t)
-;; (load-theme 'doom-Iosvkem t)
+;; (load-theme 'doom-opera t)
+(load-theme 'doom-nord t)
 ;; (load-theme 'leuven t)
-
-;; (load-theme 'modus-vivendi-tinted t)
-(load-theme 'doom-opera t)
 
 ;; --------------------------------------------------------------------------------
 ;; text
 ;; --------------------------------------------------------------------------------
 
-(add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
+;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
 ;; (add-to-list 'default-frame-alist '(font . "Courier-10"))
-;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
+(add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
 
 ;; encoding
 (set-language-environment 'utf-8)
