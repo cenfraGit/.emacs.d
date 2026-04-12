@@ -169,6 +169,7 @@
   (defun my-treemacs-ignore-hidden-dirs (filename absolute-path)
     (or (string-match-p "/bin" absolute-path)
         (string-match-p "/obj" absolute-path)
+        (string-match-p "/.vs" absolute-path)
         )))
 
 ;; --------------------------------------------------------------------------------
