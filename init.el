@@ -102,6 +102,7 @@
  nxml-attribute-indent 4
  lsp-enable-file-watchers t
  lsp-file-watch-threshold nil
+ mode-require-final-newline nil
  )
 
 (cond
