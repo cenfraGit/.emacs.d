@@ -1,0 +1,72 @@
+* .emacs.d/
+
+(30.2) moron-proof reminder of how to set up / troubleshooting
+
+* elpa keyring
+if "failed to verify signature... no public key...":
+
+#+begin_src text
+  M-x package-install RET gnu-elpa-keyring-update RET
+#+end_src
+
+temporary workaround:
+
+#+begin_src elisp
+  (setq package-check-signature nil)
+#+end_src
+
+* (windows) msys2 / ucrt64
+use ucrt64 for 64bit windows builds. PATH:
+
+#+begin_src text
+  C:\msys64\ucrt64\bin
+#+end_src
+
+from ucrt64 shell:
+
+#+begin_src sh
+  pacman -S mingw-w64-ucrt-x86_64-gcc
+#+end_src
+
+verify:
+
+#+begin_src elisp
+  (executable-find "gcc")
+#+end_src
+
+* tree-sitter
+- use built-in treesit instead of tree-sitter.el
+- (windows) requires ucrt64's gcc
+
+emacs' ABI version:
+
+#+begin_src elisp
+  (treesit-library-abi-versionx)
+#+end_src
+
+- make sure grammar ABI compiled version matches emacs' ABI version (currently 14)
+- or pin working grammar version to suported ABI version, e.g.:
+
+#+begin_src elisp
+  (setq treesit-language-source-alist
+        '((c-sharp
+             "https://github.com/tree-sitter/tree-sitter-c-sharp"
+             "v0.23.1")))
+#+end_src
+
+then install:
+
+#+begin_src text
+  M-x treesit-install-language-grammar RET c-sharp RET
+#+end_src
+
+verify:
+
+#+begin_src elisp
+(treesit-language-available-p 'c-sharp)
+#+end_src
+
+* lsp
+- c#: must have ~csharp-ls~ installed: ~dotnet tool install --global csharp-ls~
+  (path must include .dotnet/tools)
+
