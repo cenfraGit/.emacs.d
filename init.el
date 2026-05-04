@@ -279,7 +279,12 @@
          (csharp-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
-               '((csharp-ts-mode csharp-mode) . ("csharp-ls"))))
+               '((csharp-ts-mode csharp-mode) . ("csharp-ls")))
+  :hook ((eglot-managed-mode . my/eglot-mode-hook-fn))
+  :config
+  (defun my/eglot-mode-hook-fn ()
+    (eglot-inlay-hints-mode 0))
+)
 
 (global-set-key (kbd "C-c l l") #'eglot)
 (global-set-key (kbd "C-c l q") #'eglot-shutdown)
