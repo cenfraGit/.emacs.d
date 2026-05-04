@@ -325,6 +325,24 @@
   (yas-reload-all)
 )
 
+;------------------------------------------------------------ nxml-mode
+
+(use-package nxml-mode
+  :ensure nil
+  :hook ((nxml-mode . hs-minor-mode)
+         (nxml-mode . indent-bars-mode))
+  :config
+  (require 'hideshow)
+  (require 'sgml-mode)
+  (add-to-list 'hs-special-modes-alist
+               '(nxml-mode
+                 "<!--\\|<[^/>]*[^/]>"
+                 "-->\\|</[^/>]*[^/]>"
+                 "<!--"
+                 sgml-skip-tag-forward
+                 nil))
+)
+
 ;--------------------------------------------------------------------------------
 ; minor modes
 ;--------------------------------------------------------------------------------
@@ -381,6 +399,8 @@
 
 (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
+
+(global-set-key (kbd "C-c j") 'hs-toggle-hiding)
 
 (load custom-file 'noerror 'nomessage)
 (let ((buffer-name "*Messages*"))
