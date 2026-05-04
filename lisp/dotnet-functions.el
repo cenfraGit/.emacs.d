@@ -70,6 +70,25 @@
     (user-error "No .csproj found."))
 )
 
+;------------------------------------------------------------ test
+
+(defun my/dotnet-test-root ()
+  (interactive)
+  (my/dotnet--compile "dotnet test"
+                      "*Dotnet Test Root*"
+                      (my/dotnet--project-root))
+)
+
+(defun my/dotnet-test-project ()
+  (interactive)
+  (if-let ((csproj (my/dotnet--nearest-csproj)))
+      (my/dotnet--compile
+       (format "dotnet test %s" (shell-quote-argument csproj))
+       "*Dotnet Test Project*"
+       (file-name-directory csproj))
+    (user-error "No .csproj found."))
+)
+
 ;------------------------------------------------------------ run
 
 (defun my/dotnet-run-project ()
@@ -88,6 +107,8 @@
 (global-set-key (kbd "C-c d b p") #'my/dotnet-build-project)
 (global-set-key (kbd "C-c d c r") #'my/dotnet-clean-root)
 (global-set-key (kbd "C-c d c p") #'my/dotnet-clean-project)
+(global-set-key (kbd "C-c d t r") #'my/dotnet-test-root)
+(global-set-key (kbd "C-c d t p") #'my/dotnet-test-project)
 (global-set-key (kbd "C-c d r")   #'my/dotnet-run-project)
 
 (provide 'dotnet-functions)
