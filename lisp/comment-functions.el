@@ -18,7 +18,7 @@
 
 (defun my/internal-get-comment-line (length)
   "returns a line with the comment prefix"
-  (concat (my/internal-get-comment-prefix) (make-string length ?-))
+  (concat (my/internal-get-comment-prefix) (make-string length ?─))
 )
 
 ; ------------------------------------------------------------ header
@@ -69,7 +69,7 @@
                             (* comment-symbol-length 2) ; at start and end
                             word-length))
           (dashes-half (/ dashes-length 2))
-          (dashes (make-string dashes-half ?-))
+          (dashes (make-string dashes-half ?─))
           (comment (concat comment-symbol " " dashes " " word " " dashes " " comment-symbol)))
     (insert comment)
   )

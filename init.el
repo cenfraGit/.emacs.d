@@ -27,7 +27,7 @@
  visible-bell t
 
  indent-tabs-mode nil
- fill-column 130
+ fill-column 70
  tab-width 4
  indent-tabs-mode nil
  whitespace-line-column 130
@@ -161,20 +161,6 @@
   (vertico-count 10)
 )
 
-(use-package vertico-posframe
-  :ensure t
-  :after vertico
-  :config
-  (vertico-posframe-mode 1)
-  (setq vertico-posframe-parameters
-        '((left-fringe . 8)
-          (right-fringe . 8)))
-  (setq vertico-posframe-poshandler #'posframe-poshandler-frame-center)
-  (setq vertico-posframe-width 100)
-  (setq vertico-posframe-height 12)
-  (setq vertico-posframe-border-width 2)
-  (setq vertico-posframe-hide-minibuffer t))
-
 ;------------------------------------------------------------ savehist
 
 (use-package savehist
@@ -264,50 +250,50 @@
 
 ;------------------------------------------------------------ eldoc
 
-(use-package eldoc
-  :ensure nil
-  :custom
-  (eldoc-idle-delay 0.3)
-  (eldoc-echo-area-use-multiline-p t)
-  (eldoc-echo-area-display-truncation-message nil))
+;; (use-package eldoc
+;;   :ensure nil
+;;   :custom
+;;   (eldoc-idle-delay 0.3)
+;;   (eldoc-echo-area-use-multiline-p t)
+;;   (eldoc-echo-area-display-truncation-message nil))
 
 ;------------------------------------------------------------ eglot
 
-(use-package eglot
-  :ensure nil
-  :hook ((csharp-ts-mode . eglot-ensure)
-         (csharp-mode . eglot-ensure))
-  :config
-  (add-to-list 'eglot-server-programs
-               '((csharp-ts-mode csharp-mode) . ("csharp-ls")))
-  :hook ((eglot-managed-mode . my/eglot-mode-hook-fn))
-  :config
-  (defun my/eglot-mode-hook-fn ()
-    (eglot-inlay-hints-mode 0))
-)
+;; (use-package eglot
+;;   :ensure nil
+;;   :hook ((csharp-ts-mode . eglot-ensure)
+;;          (csharp-mode . eglot-ensure))
+;;   :config
+;;   (add-to-list 'eglot-server-programs
+;;                '((csharp-ts-mode csharp-mode) . ("csharp-ls")))
+;;   :hook ((eglot-managed-mode . my/eglot-mode-hook-fn))
+;;   :config
+;;   (defun my/eglot-mode-hook-fn ()
+;;     (eglot-inlay-hints-mode 0))
+;; )
 
-(global-set-key (kbd "C-c l l") #'eglot)
-(global-set-key (kbd "C-c l q") #'eglot-shutdown)
-(global-set-key (kbd "C-c l r") #'eglot-rename)
-(global-set-key (kbd "C-c l a") #'eglot-code-actions)
-(global-set-key (kbd "C-c l f") #'eglot-format-buffer)
-(global-set-key (kbd "C-c l h") #'eldoc-doc-buffer)
-(global-set-key (kbd "C-c l d") #'flymake-show-buffer-diagnostics)
-(global-set-key (kbd "C-c l D") #'flymake-show-project-diagnostics)
+;; (global-set-key (kbd "C-c l l") #'eglot)
+;; (global-set-key (kbd "C-c l q") #'eglot-shutdown)
+;; (global-set-key (kbd "C-c l r") #'eglot-rename)
+;; (global-set-key (kbd "C-c l a") #'eglot-code-actions)
+;; (global-set-key (kbd "C-c l f") #'eglot-format-buffer)
+;; (global-set-key (kbd "C-c l h") #'eldoc-doc-buffer)
+;; (global-set-key (kbd "C-c l d") #'flymake-show-buffer-diagnostics)
+;; (global-set-key (kbd "C-c l D") #'flymake-show-project-diagnostics)
 
 ;------------------------------------------------------------ corfu
 
-(use-package corfu
-  :ensure t
-  :custom
-  (corfu-auto t)
-  (corfu-auto-delay 0.2)
-  (corfu-auto-prefix 1)
-  :init
-  (global-corfu-mode 1)
-  :config
-  (corfu-popupinfo-mode 1)
-  (setq corfu-popupinfo-delay '(0.5 . 0.2)))
+;; (use-package corfu
+;;   :ensure t
+;;   :custom
+;;   (corfu-auto t)
+;;   (corfu-auto-delay 0.2)
+;;   (corfu-auto-prefix 1)
+;;   :init
+;;   (global-corfu-mode 1)
+;;   :config
+;;   (corfu-popupinfo-mode 1)
+;;   (setq corfu-popupinfo-delay '(0.5 . 0.2)))
 
 ;------------------------------------------------------------ indent-bars
 
