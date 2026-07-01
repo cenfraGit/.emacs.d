@@ -18,7 +18,6 @@
  global-auto-revert-non-file-buffers t
  auto-revert-verbose nil
 
- cursor-type 'bar
  line-spacing 0.2
  display-line-numbers-type 'relative
  truncate-lines t
@@ -202,7 +201,7 @@
 (use-package olivetti
   :ensure t
   :custom
-  (olivetti-body-width 100)
+  (olivetti-body-width 150)
 )
 
 (global-set-key (kbd "<f9>") 'olivetti-mode)
@@ -329,6 +328,13 @@
                  nil))
 )
 
+(use-package markdown-mode
+  :ensure t
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'"       . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "vmd"))
+
 ;--------------------------------------------------------------------------------
 ; minor modes
 ;--------------------------------------------------------------------------------
@@ -339,7 +345,6 @@
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
-(global-hl-line-mode)
 (scroll-bar-mode -1)
 (delete-selection-mode t)
 (tooltip-mode -1)
@@ -368,8 +373,8 @@
 
 ;------------------------------------------------------------ appearance
 
-;; (add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
-(add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
+(add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
+;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 33))
 
