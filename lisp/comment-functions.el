@@ -18,7 +18,7 @@
 
 (defun my/internal-get-comment-line (length)
   "returns a line with the comment prefix"
-  (concat (my/internal-get-comment-prefix) (make-string length ?─))
+  (concat (my/internal-get-comment-prefix) (make-string length ?-))
 )
 
 ; ------------------------------------------------------------ header

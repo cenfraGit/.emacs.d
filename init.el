@@ -120,21 +120,21 @@
 
 ;------------------------------------------------------------ treemacs
 
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init (setq treemacs-width 50)
-  :bind (("C-c v" . treemacs))
-)
+;; (use-package treemacs
+;;   :ensure t
+;;   :defer t
+;;   :init (setq treemacs-width 50)
+;;   :bind (("C-c v" . treemacs))
+;; )
 
-(with-eval-after-load 'treemacs
-  (add-to-list 'treemacs-ignored-file-predicates 'my-treemacs-ignore-hidden-dirs)
-  (defun my-treemacs-ignore-hidden-dirs (filename absolute-path)
-    (or (string-match-p "/bin" absolute-path)
-        (string-match-p "/obj" absolute-path)
-        (string-match-p "/.vs" absolute-path)
-        ))
-)
+;; (with-eval-after-load 'treemacs
+;;   (add-to-list 'treemacs-ignored-file-predicates 'my-treemacs-ignore-hidden-dirs)
+;;   (defun my-treemacs-ignore-hidden-dirs (filename absolute-path)
+;;     (or (string-match-p "/bin" absolute-path)
+;;         (string-match-p "/obj" absolute-path)
+;;         (string-match-p "/.vs" absolute-path)
+;;         ))
+;; )
 
 ;------------------------------------------------------------ doom-themes
 
@@ -351,6 +351,9 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
+(setq-default font-lock-mode nil)
+(advice-add 'font-lock-mode :before-until (lambda (&rest _) t))
+
 ;--------------------------------------------------------------------------------
 ; general
 ;--------------------------------------------------------------------------------
@@ -359,8 +362,8 @@
 
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
+;; (set-keyboard-coding-system 'utf-8-unix)
+;; (set-terminal-coding-system 'utf-8-unix)
 
 ;------------------------------------------------------------ user functions
 
@@ -373,12 +376,12 @@
 
 ;------------------------------------------------------------ appearance
 
-(add-to-list 'default-frame-alist '(font . "Lucida Console-10"))
-;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
+;; (add-to-list 'default-frame-alist '(font . "Lucida Console-12"))
+(add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 33))
 
-(load-theme 'doom-dark+ t)
+(load-theme 'doom-henna t)
 ;; (load-theme 'leuven t)
 
 ;------------------------------------------------------------ misc
@@ -386,17 +389,17 @@
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
-(add-to-list 'major-mode-remap-alist '(csharp-mode . csharp-ts-mode))
+;; (add-to-list 'major-mode-remap-alist '(csharp-mode . csharp-ts-mode))
 
-(add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
 
 (global-set-key (kbd "C-c j") 'hs-toggle-hiding)
 
-(load custom-file 'noerror 'nomessage)
-(let ((buffer-name "*Messages*"))
- (when (get-buffer buffer-name)
-   (kill-buffer buffer-name)))
+;; (load custom-file 'noerror 'nomessage)
+;; (let ((buffer-name "*Messages*"))
+;;  (when (get-buffer buffer-name)
+;;    (kill-buffer buffer-name)))
 
 ;------------------------------------------------------------ cleanup
 
@@ -407,4 +410,4 @@
             (message "Emacs loaded in %s with %d garbage collections."
                      (emacs-init-time)
                      gcs-done))
-)
+          )
