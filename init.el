@@ -54,11 +54,6 @@
  completion-ignore-case t
  )
 
-(cond
- ((eq system-type 'windows-nt)
-  (setq default-directory (concat (getenv "USERPROFILE") "\\Desktop\\")))
- ((eq system-type 'gnu/linux)
-  (setq default-directory (concat (getenv "HOME") "/Desktop/"))))
 (put 'downcase-region 'disabled nil)
 
 ;--------------------------------------------------------------------------------
@@ -247,59 +242,12 @@
 (global-set-key (kbd "C-c p c") #'project-compile)
 (global-set-key (kbd "C-c p k") #'project-kill-buffers)
 
-;------------------------------------------------------------ eldoc
+;; ;------------------------------------------------------------ indent-bars
 
-;; (use-package eldoc
-;;   :ensure nil
-;;   :custom
-;;   (eldoc-idle-delay 0.3)
-;;   (eldoc-echo-area-use-multiline-p t)
-;;   (eldoc-echo-area-display-truncation-message nil))
-
-;------------------------------------------------------------ eglot
-
-;; (use-package eglot
-;;   :ensure nil
-;;   :hook ((csharp-ts-mode . eglot-ensure)
-;;          (csharp-mode . eglot-ensure))
-;;   :config
-;;   (add-to-list 'eglot-server-programs
-;;                '((csharp-ts-mode csharp-mode) . ("csharp-ls")))
-;;   :hook ((eglot-managed-mode . my/eglot-mode-hook-fn))
-;;   :config
-;;   (defun my/eglot-mode-hook-fn ()
-;;     (eglot-inlay-hints-mode 0))
-;; )
-
-;; (global-set-key (kbd "C-c l l") #'eglot)
-;; (global-set-key (kbd "C-c l q") #'eglot-shutdown)
-;; (global-set-key (kbd "C-c l r") #'eglot-rename)
-;; (global-set-key (kbd "C-c l a") #'eglot-code-actions)
-;; (global-set-key (kbd "C-c l f") #'eglot-format-buffer)
-;; (global-set-key (kbd "C-c l h") #'eldoc-doc-buffer)
-;; (global-set-key (kbd "C-c l d") #'flymake-show-buffer-diagnostics)
-;; (global-set-key (kbd "C-c l D") #'flymake-show-project-diagnostics)
-
-;------------------------------------------------------------ corfu
-
-;; (use-package corfu
+;; (use-package indent-bars
 ;;   :ensure t
-;;   :custom
-;;   (corfu-auto t)
-;;   (corfu-auto-delay 0.2)
-;;   (corfu-auto-prefix 1)
-;;   :init
-;;   (global-corfu-mode 1)
-;;   :config
-;;   (corfu-popupinfo-mode 1)
-;;   (setq corfu-popupinfo-delay '(0.5 . 0.2)))
-
-;------------------------------------------------------------ indent-bars
-
-(use-package indent-bars
-  :ensure t
-  :hook (prog-mode . indent-bars-mode)
-)
+;;   :hook (prog-mode . indent-bars-mode)
+;; )
 
 ;------------------------------------------------------------ yasnippet
 
@@ -351,8 +299,10 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
-(setq-default font-lock-mode nil)
-(advice-add 'font-lock-mode :before-until (lambda (&rest _) t))
+;; (setq-default font-lock-mode nil)
+;; (advice-add 'font-lock-mode :before-until (lambda (&rest _) t))
+(setq font-lock-ignore
+      '((prog-mode font-lock-*-face)))
 
 ;--------------------------------------------------------------------------------
 ; general
@@ -376,12 +326,22 @@
 
 ;------------------------------------------------------------ appearance
 
-;; (add-to-list 'default-frame-alist '(font . "Lucida Console-12"))
-(add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
+(cond
+ ((eq system-type 'windows-nt)
+  (when-let ((user-profile (getenv "USERPROFILE")))
+    (setq default-directory (expand-file-name "Desktop/" user-profile)))
+  (add-to-list 'default-frame-alist '(font . "Lucida Console-12")))
+
+ ((eq system-type 'gnu/linux)
+  (when-let ((home (getenv "HOME")))
+    (setq default-directory (expand-file-name "Desktop/" home)))))
+
+;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 33))
 
-(load-theme 'doom-henna t)
+;; (load-theme 'doom-1337 t)
+(load-theme 'doom-ir-black t)
 ;; (load-theme 'leuven t)
 
 ;------------------------------------------------------------ misc
