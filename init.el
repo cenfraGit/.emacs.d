@@ -301,8 +301,9 @@
 
 ;; (setq-default font-lock-mode nil)
 ;; (advice-add 'font-lock-mode :before-until (lambda (&rest _) t))
-(setq font-lock-ignore
-      '((prog-mode font-lock-*-face)))
+
+;; (setq font-lock-ignore
+;;       '((prog-mode font-lock-*-face)))
 
 ;--------------------------------------------------------------------------------
 ; general
@@ -341,7 +342,8 @@
 (add-to-list 'default-frame-alist '(height . 33))
 
 ;; (load-theme 'doom-1337 t)
-(load-theme 'doom-ir-black t)
+;; (load-theme 'doom-ir-black t)
+(load-theme 'doom-dark+ t)
 ;; (load-theme 'leuven t)
 
 ;------------------------------------------------------------ misc
