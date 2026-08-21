@@ -78,7 +78,7 @@
 ;------------------------------------------------------------ keybindings
 
 (global-set-key (kbd "C-c c l") #'my/insert-line-comment)
-(global-set-key (kbd "C-c c b") #'my/insert-block-comment)
+(global-set-key (kbd "C-c c r") #'my/insert-block-comment)
 (global-set-key (kbd "C-c c h") #'my/insert-header-comment)
 (global-set-key (kbd "C-c c i") #'my/insert-inline-comment)
 
