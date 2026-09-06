@@ -75,10 +75,6 @@
 (setq use-package-always-ensure nil)
 (setq use-package-compute-statistics t)
 
-; :init -> for variables needed before package loads
-; :config -> hooks, keybindings, funciton calls AFTER package loads
-; :custom -> user options (variables) set AFTER package loads
-
 ;------------------------------------------------------------ dired
 
 (use-package dired
@@ -111,25 +107,7 @@
   (company-minimum-prefix-length 1)
   :config
   (global-company-mode 1)
-)
-
-;------------------------------------------------------------ treemacs
-
-;; (use-package treemacs
-;;   :ensure t
-;;   :defer t
-;;   :init (setq treemacs-width 50)
-;;   :bind (("C-c v" . treemacs))
-;; )
-
-;; (with-eval-after-load 'treemacs
-;;   (add-to-list 'treemacs-ignored-file-predicates 'my-treemacs-ignore-hidden-dirs)
-;;   (defun my-treemacs-ignore-hidden-dirs (filename absolute-path)
-;;     (or (string-match-p "/bin" absolute-path)
-;;         (string-match-p "/obj" absolute-path)
-;;         (string-match-p "/.vs" absolute-path)
-;;         ))
-;; )
+  )
 
 ;------------------------------------------------------------ doom-themes
 
@@ -138,7 +116,6 @@
   :custom
   (doom-themes-enable-bold t)
   (doom-themes-enable-italic t)
-  (doom-themes-treemacs-theme "doom-Iosvkem")
   :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config)
@@ -208,23 +185,10 @@
   :bind ("C-x g" . magit-status)
 )
 
-;------------------------------------------------------------ treesit
-
-(use-package treesit
-  :ensure nil
-)
-
-(setq treesit-language-source-alist
-      '((c-sharp
-         "https://github.com/tree-sitter/tree-sitter-c-sharp"
-         "v0.23.1"))) ;; this version compiles to ABI 14
-
 ;------------------------------------------------------------ project
 
 (use-package project
   :ensure nil
-  ;; :bind-keymap
-  ;; ("C-c p" . project-prefix-map)
   :custom
   (project-switch-commands
    '((project-find-file "Find file")
@@ -241,22 +205,6 @@
 (global-set-key (kbd "C-c p d") #'project-dired)
 (global-set-key (kbd "C-c p c") #'project-compile)
 (global-set-key (kbd "C-c p k") #'project-kill-buffers)
-
-;; ;------------------------------------------------------------ indent-bars
-
-;; (use-package indent-bars
-;;   :ensure t
-;;   :hook (prog-mode . indent-bars-mode)
-;; )
-
-;------------------------------------------------------------ yasnippet
-
-(use-package yasnippet
-  :ensure t
-  :hook (prog-mode . yas-minor-mode)
-  :config
-  (yas-reload-all)
-)
 
 ;------------------------------------------------------------ nxml-mode
 
@@ -287,23 +235,18 @@
 ; minor modes
 ;--------------------------------------------------------------------------------
 
-(tool-bar-mode -1)
-(menu-bar-mode -1)
+;; (tool-bar-mode -1)
+;; (menu-bar-mode -1)
+(scroll-bar-mode -1)
 (global-whitespace-mode 1)
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (global-visual-line-mode 1)
-(scroll-bar-mode -1)
 (delete-selection-mode t)
 (tooltip-mode -1)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
 
 ;; (setq-default font-lock-mode nil)
 ;; (advice-add 'font-lock-mode :before-until (lambda (&rest _) t))
-
-;; (setq font-lock-ignore
-;;       '((prog-mode font-lock-*-face)))
 
 ;--------------------------------------------------------------------------------
 ; general
@@ -313,8 +256,6 @@
 
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
-;; (set-keyboard-coding-system 'utf-8-unix)
-;; (set-terminal-coding-system 'utf-8-unix)
 
 ;------------------------------------------------------------ user functions
 
@@ -331,45 +272,40 @@
  ((eq system-type 'windows-nt)
   (when-let ((user-profile (getenv "USERPROFILE")))
     (setq default-directory (expand-file-name "Desktop/" user-profile)))
-  (add-to-list 'default-frame-alist '(font . "Lucida Console-12")))
-
+  )
  ((eq system-type 'gnu/linux)
   (when-let ((home (getenv "HOME")))
-    (setq default-directory (expand-file-name "Desktop/" home)))))
+    (setq default-directory (expand-file-name "Desktop/" home))))
+)
 
-;; (add-to-list 'default-frame-alist '(font . "Cascadia Code-10"))
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 33))
 
-;; (load-theme 'doom-1337 t)
-;; (load-theme 'doom-ir-black t)
-(load-theme 'doom-dark+ t)
-;; (load-theme 'leuven t)
+(defun my/toggle-dark-mode ()
+  (interactive)
+  (let ((local-file (expand-file-name "local-config.el" user-emacs-directory)))
+    (if (memq 'doom-moonlight custom-enabled-themes)
+        (progn
+          (disable-theme 'doom-moonlight)
+          (tool-bar-mode 1)
+          (menu-bar-mode 1)
+          (when (file-exists-p local-file) (delete-file local-file)))
+      (load-theme 'doom-moonlight t)
+      (tool-bar-mode -1)
+      (menu-bar-mode -1)
+      (with-temp-file local-file
+        (insert "(load-theme 'doom-moonlight t)\n(tool-bar-mode -1)\n(menu-bar-mode -1)\n")))))
+
+(let ((local-config (expand-file-name "local-config.el" user-emacs-directory)))
+  (when (file-exists-p local-config)
+    (load local-config)))
 
 ;------------------------------------------------------------ misc
 
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
-;; (add-to-list 'major-mode-remap-alist '(csharp-mode . csharp-ts-mode))
-
 (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
 
 (global-set-key (kbd "C-c j") 'hs-toggle-hiding)
-
-;; (load custom-file 'noerror 'nomessage)
-;; (let ((buffer-name "*Messages*"))
-;;  (when (get-buffer buffer-name)
-;;    (kill-buffer buffer-name)))
-
-;------------------------------------------------------------ cleanup
-
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold (* 16 1024 1024))
-            (setq gc-cons-percentage 0.1)
-            (message "Emacs loaded in %s with %d garbage collections."
-                     (emacs-init-time)
-                     gcs-done))
-          )

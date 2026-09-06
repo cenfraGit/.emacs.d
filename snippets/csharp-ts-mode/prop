@@ -1,4 +1,0 @@
-# name: Auto property
-# key: prop
-# --
-public ${1:string} ${2:Name} { get; set; }$0

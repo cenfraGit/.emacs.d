@@ -1,7 +1,0 @@
-# name: ViewModel class
-# key: vm
-# --
-public class ${1:Name}VM
-{
-    $0
-}
