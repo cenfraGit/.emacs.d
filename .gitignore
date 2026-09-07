@@ -1,6 +1,7 @@
 /*
 !init.el
 !.gitignore
+!.gitattributes
 !README.org
 !lisp/
 !notes/

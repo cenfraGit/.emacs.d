@@ -199,6 +199,16 @@
      (project-switch-to-buffer "Buffer")))
 )
 
+;; windows resolves a bare "find" to the System32 find.exe, which is a text
+;; search tool, not gnu find - project.el shells out to it and fails with
+;; "FIND: Parameter format not correct".  the path must not contain spaces,
+;; because project.el interpolates it into a shell command unquoted.
+(when (eq system-type 'windows-nt)
+  (when-let* ((gnu-find (seq-find #'file-exists-p
+                                  '("C:/msys64/usr/bin/find.exe"
+                                    "C:/PROGRA~1/Git/usr/bin/find.exe"))))
+    (setq find-program gnu-find)))
+
 (global-set-key (kbd "C-c p p") #'project-switch-project)
 (global-set-key (kbd "C-c p f") #'project-find-file)
 (global-set-key (kbd "C-c p s") #'project-find-regexp)

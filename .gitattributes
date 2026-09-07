@@ -1,0 +1,2 @@
+# store text as LF in git, and check it out as LF everywhere
+* text=auto eol=lf
