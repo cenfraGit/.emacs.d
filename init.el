@@ -10,6 +10,7 @@
 ;--------------------------------------------------------------------------------
 
 (setq-default
+ package-check-signature nil
  default-directory "~/"
  make-backup-files nil
  auto-save-default nil
@@ -205,6 +206,38 @@
 (global-set-key (kbd "C-c p d") #'project-dired)
 (global-set-key (kbd "C-c p c") #'project-compile)
 (global-set-key (kbd "C-c p k") #'project-kill-buffers)
+
+;------------------------------------------------------------ cslite
+
+(use-package eglot
+  :ensure nil
+  :init
+  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-extend-to-xref t)
+  (eglot-events-buffer-config '(:size 2000 :format short))
+  (eldoc-echo-area-use-multiline-p t)
+  :config
+  (require 'cslite)
+  (cslite-setup)
+)
+
+;------------------------------------------------------------ flymake
+
+(use-package flymake
+  :ensure nil
+  :bind (:map flymake-mode-map
+              ("C-c e n" . flymake-goto-next-error)
+              ("C-c e p" . flymake-goto-prev-error)
+              ("C-c e l" . flymake-show-buffer-diagnostics))
+)
+
+(global-set-key (kbd "C-c l r") #'cslite-restart)
+(global-set-key (kbd "C-c l e") #'eglot-events-buffer)
+;; Windows will not let you overwrite dist/cslite.dll while the server is
+;; running, so stop it before republishing a new build.
+(global-set-key (kbd "C-c l s") #'eglot-shutdown)
 
 ;------------------------------------------------------------ nxml-mode
 
