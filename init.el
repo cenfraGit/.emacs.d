@@ -284,6 +284,19 @@
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
 (delete-selection-mode t)
+
+;; pause after a prefix like C-c d to see every key under it
+(which-key-mode 1)
+(which-key-add-key-based-replacements
+  "C-c c" "comment"
+  "C-c d" "dotnet"
+  "C-c d b" "build"
+  "C-c d c" "clean"
+  "C-c d t" "test"
+  "C-c e" "errors"
+  "C-c h" "notes"
+  "C-c l" "lsp"
+  "C-c p" "project")
 (tooltip-mode -1)
 
 ;; (setq-default font-lock-mode nil)

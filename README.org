@@ -27,8 +27,10 @@ outside emacs, recompile everything:
   emacs --batch --eval "(progn (package-activate-all) (add-to-list 'load-path (expand-file-name \"lisp\" user-emacs-directory)) (byte-recompile-directory (expand-file-name \"lisp\" user-emacs-directory) 0 t) (byte-compile-file (expand-file-name \"init.el\" user-emacs-directory)))"
 #+end_src
 
-packages are activated from package-quickstart.el. package.el refreshes it on
-install/delete. if it ever gets out of sync:
+packages are activated from package-quickstart.el. it's generated per machine
+and not in git, so run this once on every new machine (including linux).
+package.el refreshes it on install/delete after that. without it emacs still
+works, just loads packages the slower way. if it ever gets out of sync:
 
 #+begin_src text
   M-x package-quickstart-refresh
