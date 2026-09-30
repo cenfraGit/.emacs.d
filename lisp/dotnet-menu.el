@@ -22,7 +22,9 @@
     ("t p" "project" my/dotnet-test-project)]
    ["Run"
     ("r p" "project" my/dotnet-run-project)]]
-  ["New"
-   ("n" "project or solution" my/dotnet-new-project)])
+  [["New"
+    ("n" "project or solution" my/dotnet-new-project)]
+   ["References"
+    ("a" "add to project" my/dotnet-add-reference)]])
 
 (provide 'dotnet-menu)

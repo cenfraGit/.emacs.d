@@ -12,13 +12,18 @@
     (project-root project))
 )
 
+(defun my/dotnet--msbuild-p (command)
+  "non-nil if COMMAND builds, so it takes msbuild options"
+  (string-match-p "\\`dotnet \\(build\\|clean\\|test\\|run\\)\\_>" command)
+)
+
 (defun my/dotnet--args (command)
   "return the arguments picked in `my/dotnet-menu', if called from it"
   (let ((args (and (eq (bound-and-true-p transient-current-command) 'my/dotnet-menu)
                    (transient-args 'my/dotnet-menu))))
     (cond
-     ;; dotnet new takes neither option
-     ((string-prefix-p "dotnet new" command) nil)
+     ;; dotnet new, add, sln take neither option
+     ((not (my/dotnet--msbuild-p command)) nil)
      ;; dotnet clean rejects --no-restore
      ((string-prefix-p "dotnet clean" command) (remove "--no-restore" args))
      (t args)))
@@ -33,18 +38,25 @@
 
 (defvar my/dotnet--project-history nil)
 
-(defun my/dotnet--pick-project (prompt)
-  "pick a .csproj in the current project, defaulting to the last one picked"
+(defun my/dotnet--pick-project (prompt &optional multiple exclude)
+  "pick a .csproj in the current project, defaulting to the last one picked.
+with MULTIPLE, pick several (comma separated) and return a list.
+EXCLUDE is a .csproj left out of the choices."
   (let* ((project (project-current t))
          (root (project-root project))
          (names (mapcar (lambda (f) (file-relative-name f root))
-                        (seq-filter (lambda (f) (string-suffix-p ".csproj" f))
+                        (seq-filter (lambda (f) (and (string-suffix-p ".csproj" f)
+                                                     (not (equal f exclude))))
                                     (project-files project))))
          (last (car (member (car my/dotnet--project-history) names))))
     (unless names (user-error "No .csproj found in %s" root))
-    (expand-file-name
-     (completing-read prompt names nil t nil 'my/dotnet--project-history last)
-     root))
+    (if multiple
+        (or (mapcar (lambda (name) (expand-file-name name root))
+                    (completing-read-multiple prompt names nil t))
+            (user-error "No project picked"))
+      (expand-file-name
+       (completing-read prompt names nil t nil 'my/dotnet--project-history last)
+       root)))
 )
 
 (defun my/dotnet--compile (command buffer-name &optional directory)
@@ -53,7 +65,7 @@
   (require 'compile)
   (setq command (string-join (cons command (my/dotnet--args command)) " "))
   ;; msbuild drops colors when output is piped, as it is in a compilation buffer
-  (unless (string-prefix-p "dotnet new" command)
+  (when (my/dotnet--msbuild-p command)
     (setq command (concat command " -clp:ForceConsoleColor")))
   (let ((default-directory (or directory default-directory))
         (compilation-buffer-name-function
@@ -151,6 +163,24 @@
                             (shell-quote-argument sln)
                             (shell-quote-argument (expand-file-name name directory)))))
     (my/dotnet--compile command (format "*Dotnet New %s*" name) directory))
+)
+
+;------------------------------------------------------------ references
+
+(defun my/dotnet-add-reference (csproj references)
+  "make CSPROJ reference each project in REFERENCES"
+  (interactive
+   (let ((csproj (my/dotnet--pick-project "Add reference to project: ")))
+     (list csproj
+           (my/dotnet--pick-project (format "%s references (comma separated): "
+                                            (file-name-base csproj))
+                                    t csproj))))
+  (my/dotnet--compile
+   (format "dotnet add %s reference %s"
+           (shell-quote-argument csproj)
+           (mapconcat #'shell-quote-argument references " "))
+   (format "*Dotnet Reference %s*" (file-name-base csproj))
+   (file-name-directory csproj))
 )
 
 ;------------------------------------------------------------ keybindings

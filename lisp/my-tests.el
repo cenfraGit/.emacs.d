@@ -158,4 +158,45 @@
     (should (equal dir (file-name-directory csproj)))
     (should (equal buffer "*Dotnet Build App*"))))
 
+(ert-deftest my/dotnet-msbuild-p ()
+  (should (my/dotnet--msbuild-p "dotnet build"))
+  (should (my/dotnet--msbuild-p "dotnet run --project x.csproj"))
+  (should-not (my/dotnet--msbuild-p "dotnet add x.csproj reference y.csproj"))
+  (should-not (my/dotnet--msbuild-p "dotnet new console -o App"))
+  (should-not (my/dotnet--msbuild-p "dotnet builder")))
+
+(ert-deftest my/dotnet-add-reference-command ()
+  (let ((api (expand-file-name "Api/Api.csproj" temporary-file-directory))
+        (core (expand-file-name "Core/Core.csproj" temporary-file-directory))
+        (data (expand-file-name "Data/Data.csproj" temporary-file-directory)))
+    ;; menu args and the color flag would make dotnet add fail
+    (should (equal (my/test--dotnet-command
+                    '("--configuration=Release" "--no-restore")
+                    (my/dotnet-add-reference api (list core data)))
+                   (format "dotnet add %s reference %s %s"
+                           (shell-quote-argument api)
+                           (shell-quote-argument core)
+                           (shell-quote-argument data))))))
+
+(ert-deftest my/dotnet-pick-several-projects-excludes-target ()
+  (my/test--with-temp-dir
+   root
+   (let ((default-directory root)
+         (offered nil))
+     (call-process "git" nil nil nil "init" "-q")
+     (dolist (f '("Api/Api.csproj" "Core/Core.csproj" "Data/Data.csproj"))
+       (make-directory (file-name-directory (expand-file-name f root)) t)
+       (write-region "" nil (expand-file-name f root)))
+     (let ((api (expand-file-name "Api/Api.csproj" root)))
+       (cl-letf (((symbol-function 'completing-read-multiple)
+                  (lambda (_prompt names &rest _)
+                    (setq offered (sort (copy-sequence names) #'string<))
+                    '("Core/Core.csproj" "Data/Data.csproj"))))
+         (should (equal (my/dotnet--pick-project "Refs: " t api)
+                        (list (expand-file-name "Core/Core.csproj" root)
+                              (expand-file-name "Data/Data.csproj" root))))
+         (should (equal offered '("Core/Core.csproj" "Data/Data.csproj"))))
+       (cl-letf (((symbol-function 'completing-read-multiple) (lambda (&rest _) nil)))
+         (should-error (my/dotnet--pick-project "Refs: " t api) :type 'user-error))))))
+
 (provide 'my-tests)
