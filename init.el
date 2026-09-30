@@ -3,19 +3,14 @@
 ; emacs config
 ;--------------------------------------------------------------------------------
 
-(global-set-key (kbd "C-;") 'comment-dwim)
-
 ;--------------------------------------------------------------------------------
 ; variables
 ;--------------------------------------------------------------------------------
 
 (setq-default
- package-check-signature nil
- default-directory "~/"
  make-backup-files nil
  auto-save-default nil
  create-lockfiles nil
- backup-directory-alist '(("." . "~/.emacs.d/.emacs-backups"))
  global-auto-revert-non-file-buffers t
  auto-revert-verbose nil
 
@@ -23,13 +18,10 @@
  display-line-numbers-type 'relative
  truncate-lines t
  tab-bar-tab-hints t
- ring-bell-function 'ignore
- visible-bell t
 
  indent-tabs-mode nil
  fill-column 70
  tab-width 4
- indent-tabs-mode nil
  whitespace-line-column 130
  case-fold-search nil
  mode-require-final-newline nil
@@ -44,7 +36,7 @@
  native-comp-async-report-warnings-errors nil
  inhibit-startup-message t
  initial-scratch-message nil
- message-log-max nil
+ message-log-max 1000
 
  org-startup-with-inline-images t
  nxml-child-indent 4
@@ -108,7 +100,7 @@
   :defer 2
   :custom
   (company-idle-delay 0.2)
-  (company-minimum-prefix-length 1)
+  (company-minimum-prefix-length 2)
   :config
   (global-company-mode 1)
   )
@@ -226,8 +218,6 @@
   :ensure nil
   :defer t
   :hook ((csharp-mode csharp-ts-mode) . eglot-ensure)
-  :init
-  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
   :custom
   (eglot-autoshutdown t)
   (eglot-extend-to-xref t)
@@ -293,7 +283,6 @@
 (global-whitespace-mode 1)
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
-(global-visual-line-mode 1)
 (delete-selection-mode t)
 (tooltip-mode -1)
 
@@ -352,9 +341,15 @@
 ;------------------------------------------------------------ misc
 
 (add-hook 'prog-mode-hook 'hs-minor-mode)
+
+;; wrap prose, truncate code. nxml and html derive from text-mode but are code.
+(add-hook 'text-mode-hook
+          (lambda ()
+            (unless (derived-mode-p 'nxml-mode 'sgml-mode)
+              (visual-line-mode 1))))
+
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
-(add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
 
 (global-set-key (kbd "C-c j") 'hs-toggle-hiding)

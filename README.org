@@ -3,13 +3,16 @@
 (30.2) moron-proof reminder of how to set up / troubleshooting
 
 * elpa keyring
-if "failed to verify signature... no public key...":
+package signatures are checked. on a new machine, run this once before
+installing anything, or it fails with "failed to verify signature... no
+public key...":
 
 #+begin_src text
   M-x package-install RET gnu-elpa-keyring-update RET
 #+end_src
 
-temporary workaround:
+if it still fails (e.g. an expired key), temporary workaround for the
+current session only:
 
 #+begin_src elisp
   (setq package-check-signature nil)
