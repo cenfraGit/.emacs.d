@@ -199,4 +199,44 @@
        (cl-letf (((symbol-function 'completing-read-multiple) (lambda (&rest _) nil)))
          (should-error (my/dotnet--pick-project "Refs: " t api) :type 'user-error))))))
 
+(ert-deftest my/dotnet-references-reads-project-references-only ()
+  (my/test--with-temp-dir
+   root
+   (let ((csproj (expand-file-name "Api.csproj" root)))
+     (write-region "<Project Sdk=\"Microsoft.NET.Sdk\">
+  <ItemGroup>
+    <PackageReference Include=\"Newtonsoft.Json\" Version=\"13.0.3\" />
+    <ProjectReference Include=\"..\\Core\\Core.csproj\" />
+    <ProjectReference Condition=\"'$(X)' == 'y'\"
+                      Include=\"..\\Data\\Data.csproj\">
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
+" nil csproj)
+     (should (equal (my/dotnet--references csproj)
+                    '("..\\Core\\Core.csproj" "..\\Data\\Data.csproj"))))))
+
+(ert-deftest my/dotnet-remove-reference-command ()
+  (let ((api (expand-file-name "Api/Api.csproj" temporary-file-directory))
+        (dir nil)
+        (ran nil))
+    (cl-letf (((symbol-function 'compile)
+               (lambda (command) (setq ran command dir default-directory))))
+      (my/dotnet-remove-reference api '("..\\Core\\Core.csproj")))
+    (should (equal ran (format "dotnet remove %s reference %s"
+                               (shell-quote-argument api)
+                               (shell-quote-argument "..\\Core\\Core.csproj"))))
+    ;; the stored paths are relative to the project, so it must run from there
+    (should (equal dir (file-name-directory api)))))
+
+(ert-deftest my/dotnet-remove-reference-without-references ()
+  (my/test--with-temp-dir
+   root
+   (let ((csproj (expand-file-name "Api.csproj" root)))
+     (write-region "<Project Sdk=\"Microsoft.NET.Sdk\" />\n" nil csproj)
+     (cl-letf (((symbol-function 'my/dotnet--pick-project) (lambda (&rest _) csproj)))
+       (should-error (call-interactively 'my/dotnet-remove-reference)
+                     :type 'user-error)))))
+
 (provide 'my-tests)

@@ -25,6 +25,7 @@
   [["New"
     ("n" "project or solution" my/dotnet-new-project)]
    ["References"
-    ("a" "add to project" my/dotnet-add-reference)]])
+    ("a" "add to project" my/dotnet-add-reference)
+    ("d" "remove from project" my/dotnet-remove-reference)]])
 
 (provide 'dotnet-menu)

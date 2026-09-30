@@ -363,7 +363,7 @@
 ;; turn color escape codes in compilation output into actual colors
 (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
 
-(add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\|csproj\\)\\'" . nxml-mode))
 
 (global-set-key (kbd "C-c j") 'hs-toggle-hiding)
 

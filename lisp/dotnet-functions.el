@@ -183,6 +183,36 @@ EXCLUDE is a .csproj left out of the choices."
    (file-name-directory csproj))
 )
 
+(defun my/dotnet--references (csproj)
+  "return the project references in CSPROJ, as written in the file"
+  (with-temp-buffer
+    (insert-file-contents csproj)
+    (let (references)
+      (while (re-search-forward "<ProjectReference[^>]*Include=\"\\([^\"]+\\)\"" nil t)
+        (push (match-string 1) references))
+      (nreverse references)))
+)
+
+(defun my/dotnet-remove-reference (csproj references)
+  "remove each of REFERENCES, as written in CSPROJ, from CSPROJ"
+  (interactive
+   (let* ((csproj (my/dotnet--pick-project "Remove reference from project: "))
+          (name (file-name-base csproj))
+          (existing (or (my/dotnet--references csproj)
+                        (user-error "%s has no project references" name))))
+     (list csproj
+           (or (completing-read-multiple
+                (format "Remove from %s (comma separated): " name) existing nil t)
+               (user-error "No reference picked")))))
+  ;; the paths are relative to the .csproj, and dotnet compile runs from there
+  (my/dotnet--compile
+   (format "dotnet remove %s reference %s"
+           (shell-quote-argument csproj)
+           (mapconcat #'shell-quote-argument references " "))
+   (format "*Dotnet Reference %s*" (file-name-base csproj))
+   (file-name-directory csproj))
+)
+
 ;------------------------------------------------------------ keybindings
 
 ;; the menu lives in its own file so transient only loads on first use
