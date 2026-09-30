@@ -23,10 +23,21 @@
       (car (directory-files dir t "\\.csproj\\'" t))))
 )
 
+(defun my/dotnet--args (command)
+  "return the arguments picked in `my/dotnet-menu', if called from it"
+  (let ((args (and (eq (bound-and-true-p transient-current-command) 'my/dotnet-menu)
+                   (transient-args 'my/dotnet-menu))))
+    ;; dotnet clean rejects --no-restore
+    (if (string-prefix-p "dotnet clean" command)
+        (remove "--no-restore" args)
+      args))
+)
+
 (defun my/dotnet--compile (command buffer-name &optional directory)
   ;; loaded here, not at startup. it must load before the let below binds one
   ;; of its variables, or its defcustom is ignored.
   (require 'compile)
+  (setq command (string-join (cons command (my/dotnet--args command)) " "))
   (let ((default-directory (or directory default-directory))
         (compilation-buffer-name-function
          (lambda (_) buffer-name)))
@@ -103,12 +114,9 @@
 
 ;------------------------------------------------------------ keybindings
 
-(global-set-key (kbd "C-c d b r") #'my/dotnet-build-root)
-(global-set-key (kbd "C-c d b p") #'my/dotnet-build-project)
-(global-set-key (kbd "C-c d c r") #'my/dotnet-clean-root)
-(global-set-key (kbd "C-c d c p") #'my/dotnet-clean-project)
-(global-set-key (kbd "C-c d t r") #'my/dotnet-test-root)
-(global-set-key (kbd "C-c d t p") #'my/dotnet-test-project)
-(global-set-key (kbd "C-c d r")   #'my/dotnet-run-project)
+;; the menu keeps the old key sequences, so C-c d b r still builds the root.
+;; it lives in its own file so transient only loads on first use.
+(autoload 'my/dotnet-menu "dotnet-menu" nil t)
+(global-set-key (kbd "C-c d") #'my/dotnet-menu)
 
 (provide 'dotnet-functions)

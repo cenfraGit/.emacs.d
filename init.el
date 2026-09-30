@@ -290,9 +290,6 @@
 (which-key-add-key-based-replacements
   "C-c c" "comment"
   "C-c d" "dotnet"
-  "C-c d b" "build"
-  "C-c d c" "clean"
-  "C-c d t" "test"
   "C-c e" "errors"
   "C-c h" "notes"
   "C-c l" "lsp"

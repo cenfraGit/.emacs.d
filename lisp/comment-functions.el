@@ -6,8 +6,8 @@
 
 (defvar my/header-comment-length 80)
 (defvar my/block-comment-length 80)
-(defvar my/line-comment-length 60)
-(defvar my/inline-comment-length 52)
+(defvar my/line-comment-length 52)
+(defvar my/inline-comment-length 60)
 
 ; ------------------------------------------------------------ internals
 
@@ -29,7 +29,10 @@
     (goto-char (point-min))
     (insert line-comment)
     (insert "\n")
-    (insert (concat (my/internal-get-comment-prefix) (file-name-nondirectory (buffer-file-name))))
+    (insert (concat (my/internal-get-comment-prefix)
+                    (if buffer-file-name
+                        (file-name-nondirectory buffer-file-name)
+                      (buffer-name))))
     (insert "\n")
     (insert line-comment)
   )
@@ -69,7 +72,7 @@
                             (* comment-symbol-length 2) ; at start and end
                             word-length))
           (dashes-half (/ dashes-length 2))
-          (dashes (make-string dashes-half ?─))
+          (dashes (make-string dashes-half ?-))
           (comment (concat comment-symbol " " dashes " " word " " dashes " " comment-symbol)))
     (insert comment)
   )
