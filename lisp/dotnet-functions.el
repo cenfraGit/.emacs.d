@@ -12,19 +12,6 @@
     (project-root project))
 )
 
-(defun my/dotnet--nearest-csproj ()
-  "return nearest .csproj above current file"
-  (let* ((start (or (and buffer-file-name
-                         (file-name-directory buffer-file-name))
-                    default-directory))
-         (dir (locate-dominating-file
-               start
-               (lambda (d)
-                 (directory-files d nil "\\.csproj\\'" t)))))
-    (when dir
-      (car (directory-files dir t "\\.csproj\\'" t))))
-)
-
 (defun my/dotnet--args (command)
   "return the arguments picked in `my/dotnet-menu', if called from it"
   (let ((args (and (eq (bound-and-true-p transient-current-command) 'my/dotnet-menu)
@@ -44,7 +31,7 @@
     default-directory)
 )
 
-(defvar my/dotnet--run-history nil)
+(defvar my/dotnet--project-history nil)
 
 (defun my/dotnet--pick-project (prompt)
   "pick a .csproj in the current project, defaulting to the last one picked"
@@ -53,10 +40,10 @@
          (names (mapcar (lambda (f) (file-relative-name f root))
                         (seq-filter (lambda (f) (string-suffix-p ".csproj" f))
                                     (project-files project))))
-         (last (car (member (car my/dotnet--run-history) names))))
+         (last (car (member (car my/dotnet--project-history) names))))
     (unless names (user-error "No .csproj found in %s" root))
     (expand-file-name
-     (completing-read prompt names nil t nil 'my/dotnet--run-history last)
+     (completing-read prompt names nil t nil 'my/dotnet--project-history last)
      root))
 )
 
@@ -65,6 +52,9 @@
   ;; of its variables, or its defcustom is ignored.
   (require 'compile)
   (setq command (string-join (cons command (my/dotnet--args command)) " "))
+  ;; msbuild drops colors when output is piped, as it is in a compilation buffer
+  (unless (string-prefix-p "dotnet new" command)
+    (setq command (concat command " -clp:ForceConsoleColor")))
   (let ((default-directory (or directory default-directory))
         (compilation-buffer-name-function
          (lambda (_) buffer-name)))
@@ -79,14 +69,13 @@
                       "*Dotnet Build Root*"
                       (my/dotnet--project-root)))
 
-(defun my/dotnet-build-project ()
-  (interactive)
-  (if-let ((csproj (my/dotnet--nearest-csproj)))
-      (my/dotnet--compile
-       (format "dotnet build %s" (shell-quote-argument csproj))
-       "*Dotnet Build Project*"
-       (file-name-directory csproj))
-    (user-error "No .csproj found."))
+(defun my/dotnet-build-project (csproj)
+  "pick a project and build it"
+  (interactive (list (my/dotnet--pick-project "Build project: ")))
+  (my/dotnet--compile
+   (format "dotnet build %s" (shell-quote-argument csproj))
+   (format "*Dotnet Build %s*" (file-name-base csproj))
+   (file-name-directory csproj))
 )
 
 ;------------------------------------------------------------ clean
@@ -98,14 +87,13 @@
                       (my/dotnet--project-root))
 )
 
-(defun my/dotnet-clean-project ()
-  (interactive)
-  (if-let ((csproj (my/dotnet--nearest-csproj)))
-      (my/dotnet--compile
-       (format "dotnet clean %s" (shell-quote-argument csproj))
-       "*Dotnet Clean Project*"
-       (file-name-directory csproj))
-    (user-error "No .csproj found."))
+(defun my/dotnet-clean-project (csproj)
+  "pick a project and clean it"
+  (interactive (list (my/dotnet--pick-project "Clean project: ")))
+  (my/dotnet--compile
+   (format "dotnet clean %s" (shell-quote-argument csproj))
+   (format "*Dotnet Clean %s*" (file-name-base csproj))
+   (file-name-directory csproj))
 )
 
 ;------------------------------------------------------------ test
@@ -117,32 +105,19 @@
                       (my/dotnet--project-root))
 )
 
-(defun my/dotnet-test-project ()
-  (interactive)
-  (if-let ((csproj (my/dotnet--nearest-csproj)))
-      (my/dotnet--compile
-       (format "dotnet test %s" (shell-quote-argument csproj))
-       "*Dotnet Test Project*"
-       (file-name-directory csproj))
-    (user-error "No .csproj found."))
+(defun my/dotnet-test-project (csproj)
+  "pick a project and test it"
+  (interactive (list (my/dotnet--pick-project "Test project: ")))
+  (my/dotnet--compile
+   (format "dotnet test %s" (shell-quote-argument csproj))
+   (format "*Dotnet Test %s*" (file-name-base csproj))
+   (file-name-directory csproj))
 )
 
 ;------------------------------------------------------------ run
 
-(defun my/dotnet-run-project ()
-  (interactive)
-  (if-let ((csproj (my/dotnet--nearest-csproj)))
-      (my/dotnet--compile
-       (format "dotnet run --project %s" (shell-quote-argument csproj))
-       "*Dotnet Run Project*"
-       (file-name-directory csproj))
-    (user-error "No .csproj found."))
-)
-
-;------------------------------------------------------------ run from solution
-
-(defun my/dotnet-run-solution-project (csproj)
-  "pick any project in the solution and run it"
+(defun my/dotnet-run-project (csproj)
+  "pick a project and run it"
   (interactive (list (my/dotnet--pick-project "Run project: ")))
   (my/dotnet--compile
    (format "dotnet run --project %s" (shell-quote-argument csproj))
@@ -180,8 +155,7 @@
 
 ;------------------------------------------------------------ keybindings
 
-;; the menu keeps the old key sequences, so C-c d b r still builds the root.
-;; it lives in its own file so transient only loads on first use.
+;; the menu lives in its own file so transient only loads on first use
 (autoload 'my/dotnet-menu "dotnet-menu" nil t)
 (global-set-key (kbd "C-c d") #'my/dotnet-menu)
 

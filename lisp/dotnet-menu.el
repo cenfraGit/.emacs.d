@@ -7,7 +7,7 @@
 (require 'dotnet-functions)
 
 (transient-define-prefix my/dotnet-menu ()
-  "run dotnet commands on the solution root or the nearest project"
+  "run dotnet commands on the solution root or a picked project"
   ["Arguments"
    ("-c" "configuration" "--configuration=" :choices ("Release" "Debug"))
    ("-n" "no restore" "--no-restore")]
@@ -21,8 +21,7 @@
     ("t r" "root" my/dotnet-test-root)
     ("t p" "project" my/dotnet-test-project)]
    ["Run"
-    ("r" "nearest project" my/dotnet-run-project)
-    ("R" "pick project" my/dotnet-run-solution-project)]]
+    ("r p" "project" my/dotnet-run-project)]]
   ["New"
    ("n" "project or solution" my/dotnet-new-project)])
 

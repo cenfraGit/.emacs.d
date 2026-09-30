@@ -8,6 +8,8 @@
 (require 'cl-lib)
 ;; loaded up front so it can't replace the mocked `compile' mid-test
 (require 'compile)
+;; loaded up front so the let below can rebind its variables
+(require 'project)
 (require 'comment-functions)
 (require 'dotnet-functions)
 
@@ -63,19 +65,19 @@
   (should (equal (my/test--dotnet-command
                   '("--configuration=Release" "--no-restore")
                   (my/dotnet--compile "dotnet build" "*b*"))
-                 "dotnet build --configuration=Release --no-restore")))
+                 "dotnet build --configuration=Release --no-restore -clp:ForceConsoleColor")))
 
 (ert-deftest my/dotnet-clean-drops-no-restore ()
   (should (equal (my/test--dotnet-command
                   '("--configuration=Debug" "--no-restore")
                   (my/dotnet--compile "dotnet clean" "*c*"))
-                 "dotnet clean --configuration=Debug")))
+                 "dotnet clean --configuration=Debug -clp:ForceConsoleColor")))
 
-(ert-deftest my/dotnet-outside-menu-adds-nothing ()
+(ert-deftest my/dotnet-outside-menu-adds-only-color ()
   (should (equal (my/test--dotnet-command
                   nil
                   (my/dotnet--compile "dotnet test" "*t*"))
-                 "dotnet test")))
+                 "dotnet test -clp:ForceConsoleColor")))
 
 (ert-deftest my/dotnet-new-ignores-menu-args ()
   (should (equal (my/test--dotnet-command
@@ -84,7 +86,11 @@
                  "dotnet new console -o App")))
 
 (defmacro my/test--with-temp-dir (var &rest body)
-  `(let ((,var (file-name-as-directory (make-temp-file "my-test" t))))
+  "run BODY with VAR bound to a fresh directory, deleted afterwards"
+  `(let* ((,var (file-name-as-directory (make-temp-file "my-test" t)))
+          ;; project.el remembers every project it sees, keep that out of the real list
+          (project-list-file (expand-file-name "projects" ,var))
+          (project--list 'unset))
      (unwind-protect (progn ,@body)
        (delete-directory ,var t))))
 
@@ -132,13 +138,24 @@
                         default (nth 4 args))
                   "b/B.csproj")))
        ;; last pick no longer exists, so no default
-       (let ((my/dotnet--run-history '("gone/X.csproj")))
+       (let ((my/dotnet--project-history '("gone/X.csproj")))
          (should (equal (my/dotnet--pick-project "Run: ")
                         (expand-file-name "b/B.csproj" root)))
          (should (equal offered '("a/A.csproj" "b/B.csproj")))
          (should-not default))
-       (let ((my/dotnet--run-history '("a/A.csproj")))
+       (let ((my/dotnet--project-history '("a/A.csproj")))
          (my/dotnet--pick-project "Run: ")
          (should (equal default "a/A.csproj")))))))
+
+(ert-deftest my/dotnet-build-project-uses-picked-project ()
+  (let ((csproj (expand-file-name "src/App/App.csproj" temporary-file-directory))
+        (dir nil)
+        (buffer nil))
+    (cl-letf (((symbol-function 'compile)
+               (lambda (_) (setq dir default-directory
+                                 buffer (funcall compilation-buffer-name-function nil)))))
+      (my/dotnet-build-project csproj))
+    (should (equal dir (file-name-directory csproj)))
+    (should (equal buffer "*Dotnet Build App*"))))
 
 (provide 'my-tests)

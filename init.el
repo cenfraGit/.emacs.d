@@ -360,6 +360,9 @@
 
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 
+;; turn color escape codes in compilation output into actual colors
+(add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
+
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
 
 (global-set-key (kbd "C-c j") 'hs-toggle-hiding)
