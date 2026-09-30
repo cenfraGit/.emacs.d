@@ -77,4 +77,68 @@
                   (my/dotnet--compile "dotnet test" "*t*"))
                  "dotnet test")))
 
+(ert-deftest my/dotnet-new-ignores-menu-args ()
+  (should (equal (my/test--dotnet-command
+                  '("--configuration=Release" "--no-restore")
+                  (my/dotnet--compile "dotnet new console -o App" "*n*"))
+                 "dotnet new console -o App")))
+
+(defmacro my/test--with-temp-dir (var &rest body)
+  `(let ((,var (file-name-as-directory (make-temp-file "my-test" t))))
+     (unwind-protect (progn ,@body)
+       (delete-directory ,var t))))
+
+(ert-deftest my/dotnet-new-project-adds-to-nearest-solution ()
+  (my/test--with-temp-dir
+   root
+   (write-region "" nil (expand-file-name "Demo.slnx" root))
+   (make-directory (expand-file-name "src" root))
+   (let ((src (expand-file-name "src/" root)))
+     (should (equal (my/test--dotnet-command nil (my/dotnet-new-project "classlib" "Lib" src))
+                    (format "dotnet new classlib -o Lib && dotnet sln %s add %s"
+                            (shell-quote-argument (expand-file-name "Demo.slnx" root))
+                            (shell-quote-argument (expand-file-name "Lib" src))))))))
+
+(ert-deftest my/dotnet-new-project-without-solution ()
+  (my/test--with-temp-dir
+   root
+   (should (equal (my/test--dotnet-command nil (my/dotnet-new-project "console" "App" root))
+                  "dotnet new console -o App"))))
+
+(ert-deftest my/dotnet-new-solution-does-not-add-itself ()
+  (my/test--with-temp-dir
+   root
+   (write-region "" nil (expand-file-name "Old.sln" root))
+   (should (equal (my/test--dotnet-command nil (my/dotnet-new-project "sln" "New" root))
+                  "dotnet new sln -o New"))))
+
+(ert-deftest my/dotnet-new-project-rejects-empty-name ()
+  (should-error (my/dotnet-new-project "console" "" temporary-file-directory)
+                :type 'user-error))
+
+(ert-deftest my/dotnet-pick-project-lists-csproj-and-remembers-last ()
+  (my/test--with-temp-dir
+   root
+   (let ((default-directory root)
+         (offered nil)
+         (default nil))
+     (call-process "git" nil nil nil "init" "-q")
+     (dolist (f '("a/A.csproj" "b/B.csproj" "b/readme.md"))
+       (make-directory (file-name-directory (expand-file-name f root)) t)
+       (write-region "" nil (expand-file-name f root)))
+     (cl-letf (((symbol-function 'completing-read)
+                (lambda (_prompt names &rest args)
+                  (setq offered (sort (copy-sequence names) #'string<)
+                        default (nth 4 args))
+                  "b/B.csproj")))
+       ;; last pick no longer exists, so no default
+       (let ((my/dotnet--run-history '("gone/X.csproj")))
+         (should (equal (my/dotnet--pick-project "Run: ")
+                        (expand-file-name "b/B.csproj" root)))
+         (should (equal offered '("a/A.csproj" "b/B.csproj")))
+         (should-not default))
+       (let ((my/dotnet--run-history '("a/A.csproj")))
+         (my/dotnet--pick-project "Run: ")
+         (should (equal default "a/A.csproj")))))))
+
 (provide 'my-tests)

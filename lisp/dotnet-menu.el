@@ -21,6 +21,9 @@
     ("t r" "root" my/dotnet-test-root)
     ("t p" "project" my/dotnet-test-project)]
    ["Run"
-    ("r" "project" my/dotnet-run-project)]])
+    ("r" "nearest project" my/dotnet-run-project)
+    ("R" "pick project" my/dotnet-run-solution-project)]]
+  ["New"
+   ("n" "project or solution" my/dotnet-new-project)])
 
 (provide 'dotnet-menu)

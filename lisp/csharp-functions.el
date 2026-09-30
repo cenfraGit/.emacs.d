@@ -7,7 +7,9 @@
 
 (defun my/wpf--project-root ()
   "return current project root"
-  (project-root (project-current t))
+  ;; project-current first: it autoloads project.el, which defines project-root
+  (let ((project (project-current t)))
+    (project-root project))
 )
 
 (defun my/wpf--default-namespace ()
