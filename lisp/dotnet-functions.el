@@ -17,16 +17,24 @@
   (string-match-p "\\`dotnet \\(build\\|clean\\|test\\|run\\)\\_>" command)
 )
 
-(defun my/dotnet--args (command)
+(defun my/dotnet--menu-args ()
   "return the arguments picked in `my/dotnet-menu', if called from it"
-  (let ((args (and (eq (bound-and-true-p transient-current-command) 'my/dotnet-menu)
-                   (transient-args 'my/dotnet-menu))))
+  (and (eq (bound-and-true-p transient-current-command) 'my/dotnet-menu)
+       (transient-args 'my/dotnet-menu))
+)
+
+(defun my/dotnet--args (command)
+  "return the menu arguments that COMMAND accepts"
+  (let ((args (my/dotnet--menu-args)))
     (cond
-     ;; dotnet new, add, sln take neither option
+     ((string-match-p "\\`dotnet add .* package " command)
+      (seq-intersection args '("--prerelease")))
+     ;; dotnet new, sln and add reference take none of them
      ((not (my/dotnet--msbuild-p command)) nil)
-     ;; dotnet clean rejects --no-restore
-     ((string-prefix-p "dotnet clean" command) (remove "--no-restore" args))
-     (t args)))
+     ;; dotnet clean also rejects --no-restore
+     ((string-prefix-p "dotnet clean" command)
+      (seq-difference args '("--no-restore" "--prerelease")))
+     (t (remove "--prerelease" args))))
 )
 
 (defun my/dotnet--root-or-here ()
@@ -210,6 +218,51 @@ EXCLUDE is a .csproj left out of the choices."
            (shell-quote-argument csproj)
            (mapconcat #'shell-quote-argument references " "))
    (format "*Dotnet Reference %s*" (file-name-base csproj))
+   (file-name-directory csproj))
+)
+
+;------------------------------------------------------------ packages
+
+(defun my/dotnet--search-packages (term prerelease)
+  "return (id . \"version  downloads\") for nuget packages matching TERM"
+  (with-temp-buffer
+    (unless (zerop (apply #'call-process "dotnet" nil '(t nil) nil
+                          "package" "search" term "--take" "30" "--format" "json"
+                          (and prerelease '("--prerelease"))))
+      (user-error "dotnet package search failed: %s" (buffer-string)))
+    (let (packages)
+      ;; one entry per nuget source, the same package can show up in several
+      (seq-doseq (source (gethash "searchResult" (json-parse-string (buffer-string))))
+        (seq-doseq (package (gethash "packages" source))
+          (let ((id (gethash "id" package)))
+            (unless (assoc id packages)
+              (push (cons id (format "%s  %s downloads"
+                                     (gethash "latestVersion" package)
+                                     (file-size-human-readable
+                                      (gethash "totalDownloads" package) 'si)))
+                    packages)))))
+      (nreverse packages)))
+)
+
+(defun my/dotnet-add-package (csproj package)
+  "search nuget and add PACKAGE to CSPROJ, pre-release too with -p in the menu"
+  (interactive
+   (let* ((csproj (my/dotnet--pick-project "Add package to project: "))
+          (term (read-string "Search NuGet: "))
+          (packages (progn
+                      (when (string-empty-p term) (user-error "Search is empty"))
+                      (or (my/dotnet--search-packages
+                           term (member "--prerelease" (my/dotnet--menu-args)))
+                          (user-error "No packages match %s" term))))
+          (completion-extra-properties
+           (list :annotation-function
+                 (lambda (id) (concat "  " (cdr (assoc id packages)))))))
+     (list csproj (completing-read "Package: " packages nil t))))
+  (my/dotnet--compile
+   (format "dotnet add %s package %s"
+           (shell-quote-argument csproj)
+           (shell-quote-argument package))
+   (format "*Dotnet Package %s*" (file-name-base csproj))
    (file-name-directory csproj))
 )
 

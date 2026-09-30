@@ -10,7 +10,8 @@
   "run dotnet commands on the solution root or a picked project"
   ["Arguments"
    ("-c" "configuration" "--configuration=" :choices ("Release" "Debug"))
-   ("-n" "no restore" "--no-restore")]
+   ("-n" "no restore" "--no-restore")
+   ("-p" "include pre-release packages" "--prerelease")]
   [["Build"
     ("b r" "root" my/dotnet-build-root)
     ("b p" "project" my/dotnet-build-project)]
@@ -26,6 +27,8 @@
     ("n" "project or solution" my/dotnet-new-project)]
    ["References"
     ("a" "add to project" my/dotnet-add-reference)
-    ("d" "remove from project" my/dotnet-remove-reference)]])
+    ("d" "remove from project" my/dotnet-remove-reference)]
+   ["Packages"
+    ("p" "search and add" my/dotnet-add-package)]])
 
 (provide 'dotnet-menu)

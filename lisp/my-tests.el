@@ -239,4 +239,48 @@
        (should-error (call-interactively 'my/dotnet-remove-reference)
                      :type 'user-error)))))
 
+(ert-deftest my/dotnet-prerelease-only-reaches-add-package ()
+  (let ((menu '("--configuration=Release" "--no-restore" "--prerelease")))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet add a.csproj package Serilog" "*p*"))
+                   "dotnet add a.csproj package Serilog --prerelease"))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet build" "*b*"))
+                   "dotnet build --configuration=Release --no-restore -clp:ForceConsoleColor"))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet clean" "*c*"))
+                   "dotnet clean --configuration=Release -clp:ForceConsoleColor"))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet add a.csproj reference b.csproj" "*r*"))
+                   "dotnet add a.csproj reference b.csproj"))))
+
+(defconst my/test--search-json
+  "{\"version\": 2, \"problems\": [], \"searchResult\": [
+     {\"sourceName\": \"offline\", \"packages\": [
+       {\"id\": \"Serilog\", \"latestVersion\": \"2.0.0\", \"totalDownloads\": 10}]},
+     {\"sourceName\": \"nuget.org\", \"packages\": [
+       {\"id\": \"Serilog\", \"latestVersion\": \"4.4.0\", \"totalDownloads\": 3324144730},
+       {\"id\": \"Serilog.Sinks.File\", \"latestVersion\": \"7.0.0\", \"totalDownloads\": 1239526774}]}]}")
+
+(ert-deftest my/dotnet-search-packages-merges-sources ()
+  (let (args)
+    (cl-letf (((symbol-function 'call-process)
+               (lambda (_program _infile _dest _display &rest rest)
+                 (setq args rest)
+                 (insert my/test--search-json)
+                 0)))
+      ;; first source wins for a package listed twice
+      (should (equal (my/dotnet--search-packages "serilog" nil)
+                     '(("Serilog" . "2.0.0  10 downloads")
+                       ("Serilog.Sinks.File" . "7.0.0  1.2G downloads"))))
+      (should-not (member "--prerelease" args))
+      (my/dotnet--search-packages "serilog" t)
+      (should (member "--prerelease" args)))))
+
+(ert-deftest my/dotnet-search-packages-failure ()
+  (cl-letf (((symbol-function 'call-process)
+             (lambda (&rest _) (insert "error: no network") 1)))
+    (should-error (my/dotnet--search-packages "serilog" nil) :type 'user-error)))
+
+(ert-deftest my/dotnet-add-package-rejects-empty-search ()
+  (cl-letf (((symbol-function 'my/dotnet--pick-project) (lambda (&rest _) "a.csproj"))
+            ((symbol-function 'read-string) (lambda (&rest _) "")))
+    (should-error (call-interactively 'my/dotnet-add-package) :type 'user-error)))
+
 (provide 'my-tests)
