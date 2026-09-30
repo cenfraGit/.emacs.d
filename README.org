@@ -15,58 +15,25 @@ temporary workaround:
   (setq package-check-signature nil)
 #+end_src
 
-* (windows) msys2 / ucrt64
-use ucrt64 for 64bit windows builds. PATH:
-
-#+begin_src text
-  C:\msys64\ucrt64\bin
-#+end_src
-
-from ucrt64 shell:
+* startup speed
+init.el and lisp/ are byte-compiled (the .elc files are not in git).
+saving an .el inside emacs recompiles it. after a fresh clone, or edits made
+outside emacs, recompile everything:
 
 #+begin_src sh
-  pacman -S mingw-w64-ucrt-x86_64-gcc
+  emacs --batch --eval "(progn (package-activate-all) (add-to-list 'load-path (expand-file-name \"lisp\" user-emacs-directory)) (byte-recompile-directory (expand-file-name \"lisp\" user-emacs-directory) 0 t) (byte-compile-file (expand-file-name \"init.el\" user-emacs-directory)))"
 #+end_src
 
-verify:
-
-#+begin_src elisp
-  (executable-find "gcc")
-#+end_src
-
-* tree-sitter
-- use built-in treesit instead of tree-sitter.el
-- (windows) requires ucrt64's gcc
-
-emacs' ABI version:
-
-#+begin_src elisp
-  (treesit-library-abi-versionx)
-#+end_src
-
-- make sure grammar ABI compiled version matches emacs' ABI version (currently 14)
-- or pin working grammar version to suported ABI version, e.g.:
-
-#+begin_src elisp
-  (setq treesit-language-source-alist
-        '((c-sharp
-             "https://github.com/tree-sitter/tree-sitter-c-sharp"
-             "v0.23.1")))
-#+end_src
-
-then install:
+packages are activated from package-quickstart.el. package.el refreshes it on
+install/delete. if it ever gets out of sync:
 
 #+begin_src text
-  M-x treesit-install-language-grammar RET c-sharp RET
+  M-x package-quickstart-refresh
 #+end_src
 
-verify:
-
-#+begin_src elisp
-(treesit-language-available-p 'c-sharp)
-#+end_src
+check with ~M-x emacs-init-time~ (about 1s on the work laptop).
 
 * lsp
-- c#: must have ~csharp-ls~ installed: ~dotnet tool install --global csharp-ls~
-  (path must include .dotnet/tools)
-
+- c#: cslite, published into ~cslite/~ inside this directory
+  (see the commentary in ~lisp/cslite.el~)
+- ~M-x cslite-where~ shows which server binary was found
