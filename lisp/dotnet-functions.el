@@ -3,9 +3,6 @@
 ; functions related with dotnet cli
 ;--------------------------------------------------------------------------------
 
-(require 'project)
-(require 'compile)
-
 ;------------------------------------------------------------ internals
 
 (defun my/dotnet--project-root ()
@@ -27,6 +24,9 @@
 )
 
 (defun my/dotnet--compile (command buffer-name &optional directory)
+  ;; loaded here, not at startup. it must load before the let below binds one
+  ;; of its variables, or its defcustom is ignored.
+  (require 'compile)
   (let ((default-directory (or directory default-directory))
         (compilation-buffer-name-function
          (lambda (_) buffer-name)))

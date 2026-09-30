@@ -61,25 +61,28 @@
 ; packages
 ;--------------------------------------------------------------------------------
 
-(require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("gnu"  . "https://elpa.gnu.org/packages/")))
-(package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (unless package-archive-contents
-    (package-refresh-contents))
-  (package-install 'use-package))
-
-(require 'use-package)
+;; init.el is byte-compiled, which expands every use-package form ahead of
+;; time. only bind-key is needed at runtime, for :bind.
+(eval-when-compile (require 'use-package))
+(require 'bind-key)
 (setq use-package-always-ensure nil)
-(setq use-package-compute-statistics t)
+
+;; :ensure t loads all of package.el just to confirm a package is installed.
+;; only fall through to it when the package really is missing.
+(setq use-package-ensure-function
+      (lambda (name &rest args)
+        (unless (memq name package-activated-list)
+          (apply #'use-package-ensure-elpa name args))))
 
 ;------------------------------------------------------------ dired
 
 (use-package dired
   :ensure nil
+  :defer t
   :config
   (setq delete-by-moving-to-trash t)
   (eval-after-load "dired"
@@ -173,11 +176,10 @@
 
 (use-package olivetti
   :ensure t
+  :bind ("<f9>" . olivetti-mode)
   :custom
   (olivetti-body-width 150)
 )
-
-(global-set-key (kbd "<f9>") 'olivetti-mode)
 
 ;------------------------------------------------------------ magit
 
@@ -190,6 +192,7 @@
 
 (use-package project
   :ensure nil
+  :defer t
   :custom
   (project-switch-commands
    '((project-find-file "Find file")
@@ -221,6 +224,8 @@
 
 (use-package eglot
   :ensure nil
+  :defer t
+  :hook ((csharp-mode csharp-ts-mode) . eglot-ensure)
   :init
   (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
   :custom
@@ -232,6 +237,11 @@
   (require 'cslite)
   (cslite-setup)
 )
+
+;; cslite finds c# project roots outside git, so hook it in without loading eglot
+(with-eval-after-load 'project
+  (autoload 'cslite-project-root "cslite")
+  (add-hook 'project-find-functions #'cslite-project-root t))
 
 ;------------------------------------------------------------ flymake
 
@@ -280,7 +290,6 @@
 
 ;; (tool-bar-mode -1)
 ;; (menu-bar-mode -1)
-(scroll-bar-mode -1)
 (global-whitespace-mode 1)
 (global-display-line-numbers-mode 1)
 (global-auto-revert-mode 1)
@@ -315,15 +324,11 @@
  ((eq system-type 'windows-nt)
   (when-let ((user-profile (getenv "USERPROFILE")))
     (setq default-directory (expand-file-name "Desktop/" user-profile)))
-  (add-to-list 'default-frame-alist '(font . "Consolas-10"))
   )
  ((eq system-type 'gnu/linux)
   (when-let ((home (getenv "HOME")))
     (setq default-directory (expand-file-name "Desktop/" home))))
 )
-
-(add-to-list 'default-frame-alist '(width . 120))
-(add-to-list 'default-frame-alist '(height . 33))
 
 (defun my/toggle-dark-mode ()
   (interactive)
@@ -353,3 +358,11 @@
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\)\\'" . nxml-mode))
 
 (global-set-key (kbd "C-c j") 'hs-toggle-hiding)
+
+;; keep init.el and lisp/ compiled: recompile any .el that already has an .elc
+(add-hook 'after-save-hook
+          (lambda ()
+            (when (and buffer-file-name
+                       (string-suffix-p ".el" buffer-file-name)
+                       (file-exists-p (concat buffer-file-name "c")))
+              (byte-compile-file buffer-file-name))))

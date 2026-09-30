@@ -3,8 +3,6 @@
 ; file template creation for c# related projects
 ;--------------------------------------------------------------------------------
 
-(require 'project)
-
 ;------------------------------------------------------------ internal
 
 (defun my/wpf--project-root ()

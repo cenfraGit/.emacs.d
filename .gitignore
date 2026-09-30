@@ -1,5 +1,6 @@
 /*
 !init.el
+!early-init.el
 !.gitignore
 !.gitattributes
 !README.org
@@ -7,3 +8,4 @@
 !notes/
 !snippets/
 local-config.el
+*.elc
