@@ -151,6 +151,30 @@
   (run-with-idle-timer 1 nil #'recentf-mode 1)
 )
 
+;------------------------------------------------------------ org
+
+;; the default modules add links to gnus, irc, docview and others. gnus alone
+;; took 7s to load on the first .org file.
+(setq org-modules nil)
+
+;; org takes ~2-3s to load here. load it a piece at a time while idle, so the
+;; first .org file opens fast and no single pause is noticeable.
+;; not named `features': init.el binds dynamically, and that would hide the
+;; global list `require' checks, so nothing would load
+(defun my/preload-org (pending)
+  (if (null pending)
+      ;; first org-mode setup loads even more, do it once in a hidden buffer
+      (with-temp-buffer (org-mode))
+    (require (car pending) nil t)
+    ;; an idle timer set while already idle needs the current idle time added,
+    ;; or it waits for the next idle period
+    (run-with-idle-timer (time-add (current-idle-time) 0.1) nil
+                         #'my/preload-org (cdr pending))))
+
+(run-with-idle-timer 2 nil #'my/preload-org
+                     '(calendar org-macs org-compat org-keys org-fold ol org-table
+                       ob-core org-list org-src ob org))
+
 ;------------------------------------------------------------ ibuffer
 
 (global-set-key (kbd "C-x C-b") #'ibuffer)
@@ -382,9 +406,14 @@
 ;; turn color escape codes in compilation output into actual colors
 (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
 
+;; vc runs git on every file open (~0.5s here) to show the branch in the mode
+;; line. magit covers git, and project.el still finds repos without it.
+(remove-hook 'find-file-hook #'vc-refresh-state)
+
 (add-to-list 'auto-mode-alist '("\\.\\(xaml\\|axaml\\|csproj\\)\\'" . nxml-mode))
 
-(global-set-key (kbd "C-c j") 'hs-toggle-hiding)
+;; folds #region blocks too, see csharp-functions.el
+(global-set-key (kbd "C-c j") #'my/toggle-fold)
 
 ;; keep init.el and lisp/ compiled: recompile any .el that already has an .elc
 (add-hook 'after-save-hook

@@ -90,4 +90,36 @@ public partial class %s : %s\n\
     (message "Created %s and %s" xaml-file code-file))
 )
 
+;------------------------------------------------------------ folding
+
+(defun my/region-end ()
+  "return the end of the #endregion line matching the #region on this line"
+  (save-excursion
+    (let ((depth 1))
+      (end-of-line)
+      (while (and (> depth 0)
+                  (re-search-forward "^[ \t]*#\\(end\\)?region\\_>" nil t))
+        (setq depth (if (match-beginning 1) (1- depth) (1+ depth))))
+      (if (= depth 0)
+          (line-end-position)
+        (user-error "No matching #endregion"))))
+)
+
+(defun my/toggle-fold ()
+  "fold the #region on this line, otherwise the block at point like hs-toggle-hiding"
+  (interactive)
+  (if (not (save-excursion (beginning-of-line) (looking-at-p "[ \t]*#region\\_>")))
+      (hs-toggle-hiding)
+    (let* ((start (line-end-position))
+           (folded (seq-find (lambda (ov) (overlay-get ov 'my/region))
+                             (overlays-at start))))
+      (if folded
+          (delete-overlay folded)
+        (let ((ov (make-overlay start (my/region-end))))
+          (overlay-put ov 'my/region t)
+          (overlay-put ov 'display "...")
+          ;; removed if the folded text gets deleted
+          (overlay-put ov 'evaporate t)))))
+)
+
 (provide 'csharp-functions)

@@ -10,15 +10,18 @@
 
 ;; file lookups under the user profile are slow on this machine (~0.5ms each)
 ;; and every require tries 6 suffixes in every load-path dir. only look for
-;; .elc/.el during startup, then restore so modules and .el.gz sources work.
+;; .elc/.el. windows keeps it that way: built-in sources here aren't .gz and
+;; no .dll modules are used. elsewhere restore after startup, since distros
+;; often ship .el.gz sources.
 (let ((suffixes load-suffixes)
       (reps load-file-rep-suffixes))
   (setq load-suffixes '(".elc" ".el")
         load-file-rep-suffixes '(""))
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              (setq load-suffixes suffixes
-                    load-file-rep-suffixes reps))))
+  (unless (eq system-type 'windows-nt)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (setq load-suffixes suffixes
+                      load-file-rep-suffixes reps)))))
 
 (setq frame-inhibit-implied-resize t)
 

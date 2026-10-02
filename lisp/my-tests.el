@@ -304,4 +304,72 @@
         (should buffer-read-only))
     (kill-buffer)))
 
+;------------------------------------------------------------ folding
+
+(require 'csharp-functions)
+
+(defconst my/test--regions "class A
+{
+    #region Outer
+    int a;
+    #region Inner
+    int b;
+    #endregion
+    int c;
+    #endregion
+    int d;
+}
+")
+
+(defun my/test--visible ()
+  "buffer text as displayed, with folded regions replaced"
+  (let ((text (buffer-string)))
+    (dolist (ov (sort (overlays-in (point-min) (point-max))
+                      (lambda (a b) (> (overlay-start a) (overlay-start b)))))
+      (when (overlay-get ov 'my/region)
+        (setq text (concat (substring text 0 (1- (overlay-start ov)))
+                           (overlay-get ov 'display)
+                           (substring text (1- (overlay-end ov)))))))
+    text))
+
+(ert-deftest my/fold-region-skips-nested-and-unfolds ()
+  (with-temp-buffer
+    (insert my/test--regions)
+    (goto-char (point-min))
+    (search-forward "#region Outer")
+    (my/toggle-fold)
+    (should (equal (my/test--visible) "class A
+{
+    #region Outer...
+    int d;
+}
+"))
+    (my/toggle-fold)
+    (should (equal (my/test--visible) my/test--regions))))
+
+(ert-deftest my/fold-inner-region-only ()
+  (with-temp-buffer
+    (insert my/test--regions)
+    (goto-char (point-min))
+    (search-forward "#region Inner")
+    (beginning-of-line)
+    (my/toggle-fold)
+    (should (string-match-p "#region Inner\\.\\.\\.\n    int c;" (my/test--visible)))))
+
+(ert-deftest my/fold-region-without-end ()
+  (with-temp-buffer
+    (insert "#region Lonely\nint a;\n")
+    (goto-char (point-min))
+    (should-error (my/toggle-fold) :type 'user-error)))
+
+(ert-deftest my/fold-elsewhere-uses-hideshow ()
+  (with-temp-buffer
+    (insert my/test--regions)
+    (goto-char (point-min))
+    (search-forward "int a;")
+    (let ((called nil))
+      (cl-letf (((symbol-function 'hs-toggle-hiding) (lambda () (setq called t))))
+        (my/toggle-fold))
+      (should called))))
+
 (provide 'my-tests)
