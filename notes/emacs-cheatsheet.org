@@ -290,6 +290,27 @@ home screen) is a good place to sketch.
 | =M-<left>/<right>= | promote / demote heading      |
 | =TAB=              | fold / unfold a heading       |
 
+* markdown
+=.md= files open in markdown-mode, =README.md= in gfm-mode (github
+style: tables, task lists). preview uses pandoc.
+
+| key                  | does                                           |
+|----------------------+------------------------------------------------|
+| =C-c C-c p=          | preview in the browser                         |
+| =C-c C-c l=          | live preview in a side window, updates on save |
+| =C-c C-c e=          | export to an .html file next to it             |
+| =TAB=                | fold / unfold a heading                        |
+| =C-c <up>/<down>=    | move heading, list item or table row up / down |
+| =C-c <left>/<right>= | promote / demote heading or list item          |
+| =M-RET=              | new list item                                  |
+| =C-c C-l=            | insert / edit a link                           |
+| =C-c C-o=            | follow the link at point                       |
+| =C-c C-s b=          | bold                                           |
+| =C-c C-s i=          | italic                                         |
+| =C-c C-s c=          | inline code                                    |
+| =C-c C-s C=          | code block                                     |
+| =C-c C-x C-x=        | toggle a task list checkbox                    |
+
 * help
 | key     | does                                      |
 |---------+-------------------------------------------|

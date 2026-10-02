@@ -334,7 +334,10 @@
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'"       . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "vmd"))
+  ;; gfm input so tables and task lists render. markdown-mode adds the html
+  ;; header around pandoc's output itself.
+  :init (setq markdown-command "pandoc -f gfm"
+              markdown-fontify-code-blocks-natively t))
 
 ;--------------------------------------------------------------------------------
 ; minor modes
