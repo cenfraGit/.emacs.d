@@ -1,0 +1,167 @@
+#+title: emacs cheatsheet
+#+startup: overview
+
+tab on a heading folds/unfolds it. shift-tab cycles the whole file.
+forgot a key? type the prefix (like =C-c d= or =C-x p=) and wait, which-key
+lists everything under it.
+
+* my keys (from init.el and lisp/)
+| key               | does                                                |
+|-------------------+-----------------------------------------------------|
+| =C-c d=           | dotnet menu (build, test, run, new, refs, packages) |
+| =C-c c l=         | line comment  =//---- word=                         |
+| =C-c c i=         | inline comment  =// --- word --- //=                |
+| =C-c c r=         | block comment (3 lines)                             |
+| =C-c c h=         | header comment at top of file                       |
+| =M-;=             | comment / uncomment region or line                  |
+| =C-c j=           | fold / unfold block at point                        |
+| =C-c p ...=       | project keys (same as =C-x p ...=, see below)       |
+| =C-c e n= / =e p= | next / previous error (flymake)                     |
+| =C-c e l=         | list all errors in buffer                           |
+| =C-c l r=         | restart cslite                                      |
+| =C-c l s=         | stop the language server (before republishing it)   |
+| =C-c l e=         | eglot events buffer (debug lsp)                     |
+| =C-x g=           | magit status                                        |
+| =<f9>=            | olivetti (centered writing mode)                    |
+| =C-c h e= / =h c= | open elisp notes / this cheatsheet                  |
+
+** dotnet menu (=C-c d=)
+| key           | does                                                |
+|---------------+-----------------------------------------------------|
+| =-c=          | pick Release / Debug (press again to clear)         |
+| =-n=          | --no-restore, saves ~1s when packages didn't change |
+| =-p=          | include pre-release (package search and install)    |
+| =b r= / =b p= | build solution root / pick a project                |
+| =c r= / =c p= | clean root / project                                |
+| =t r= / =t p= | test root / project                                 |
+| =r p=         | run a project (each in its own buffer)              |
+| =n=           | new project or solution, added to nearest .sln      |
+| =a= / =d=     | add / remove project reference                      |
+| =p=           | search nuget and add a package                      |
+| =C-x s=       | (inside the menu) save current options as default   |
+
+in a compilation buffer: =C-c C-k= stops it, =g= reruns it, =RET= on an
+error jumps to it, =M-g n= / =M-g p= walks through errors from anywhere.
+
+* buffers and windows
+a buffer is an open thing (file, compilation, magit...). a window is a
+split showing one buffer. closing a window doesn't close the buffer.
+
+| key                  | does                                           |
+|----------------------+------------------------------------------------|
+| =C-x b=              | switch buffer (consult, live preview)          |
+| =C-x k=              | kill (close) buffer                            |
+| =C-x <left>/<right>= | previous / next buffer in this window          |
+| =C-x C-b=            | list all buffers                               |
+| =C-x p b=            | switch to a buffer of the current project only |
+| =C-x p k=            | kill all buffers of the current project        |
+| =C-x 2= / =C-x 3=    | split below / right                            |
+| =C-x o=              | jump to other window                           |
+| =C-x 0= / =C-x 1=    | close this window / close all others           |
+| =C-x 4 b=, =C-x 4 f= | buffer / file in the other window              |
+
+** narrowing in =C-x b=
+type the letter and a space first:
+| prefix  | shows                              |
+|---------+------------------------------------|
+| =p SPC= | only the current project           |
+| =b SPC= | buffers                            |
+| =* SPC= | modified (unsaved) buffers         |
+| =m SPC= | bookmarks                          |
+| =SPC=   | hidden buffers (like =*Messages*=) |
+
+* files and projects
+a project is a git repo (or a folder with a .sln/.csproj, via cslite).
+
+| key       | does                                             |
+|-----------+--------------------------------------------------|
+| =C-x p p= | switch project, then pick what to do             |
+| =C-x p f= | find file in project (fuzzy, ignores gitignored) |
+| =C-x p g= | search text in project                           |
+| =C-x p d= | open a folder of the project in dired            |
+| =C-x p c= | compile in project root                          |
+| =C-x p != | run a shell command in project root              |
+| =C-x p e= | eshell in project root                           |
+| =C-x C-f= | find file anywhere                               |
+| =C-x C-j= | dired at the current file's folder               |
+
+orderless: in any prompt, space separated pieces match in any order.
+=cont ser= finds =src/Services/UserController.cs=. pieces must be real
+substrings, =ctrl= won't match =Controller=.
+
+** dired (file manager)
+=RET= open, =^= up, =+= new folder, =C= copy, =R= rename/move, =D= delete
+(to trash), =m= mark, =u= unmark, =g= refresh.
+
+* search and code navigation
+| key       | does                                          |
+|-----------+-----------------------------------------------|
+| =C-s=     | search lines in this buffer (consult-line)    |
+| =C-r=     | classic incremental search backwards          |
+| =M-g i=   | jump to a method / class in this file (imenu) |
+| =M-g g=   | go to line                                    |
+| =M-.=     | go to definition                              |
+| =M-,=     | go back                                       |
+| =M-?=     | find references                               |
+| =M-%=     | replace (=y= / =n= / =!= all)                 |
+| =C-M-%=   | replace with regexp                           |
+| =C-x r m= | set a bookmark here                           |
+| =C-x r b= | jump to a bookmark                            |
+
+* editing
+| key           | does                                       |
+|---------------+--------------------------------------------|
+| =C->= / =C-<= | add cursor at next / previous match        |
+| =C-c C-<=     | cursor on every match                      |
+| =C-c x=       | cursor on every line of the region         |
+| =C-x SPC=     | rectangle select                           |
+| =C-x r t=     | type text into every line of the rectangle |
+| =C-x r k=     | cut the rectangle                          |
+| =M-y=         | paste from history (consult)               |
+| =C-/=         | undo                                       |
+| =C-x z=       | repeat last command (=z= again to repeat)  |
+| =C-x h=       | select all                                 |
+| =C-x 8 RET=   | insert a unicode character by name         |
+
+* tabs
+emacs has two kinds of tabs, easy to mix up:
+- *tab-bar* (=C-x t=): each tab is a whole window layout, like a
+  workspace. this is the useful one.
+- tab-line: per-window list of buffers, like browser tabs. not set up.
+
+the bar shows up when there are 2+ tabs. tabs are numbered
+(=tab-bar-tab-hints=).
+
+| key         | does                                            |
+|-------------+-------------------------------------------------|
+| =C-x t 2=   | new tab                                         |
+| =C-x t 0=   | close tab                                       |
+| =C-x t o=   | next tab (=C-TAB= too, once the bar is showing) |
+| =C-x t O=   | previous tab                                    |
+| =C-x t RET= | switch tab by name                              |
+| =C-x t r=   | rename tab                                      |
+| =C-x t m=   | move tab                                        |
+| =C-x t u=   | reopen last closed tab                          |
+| =C-x t b=   | open a buffer in a new tab                      |
+| =C-x t f=   | open a file in a new tab                        |
+| =C-x t t=   | run the next command in a new tab               |
+
+** a workflow that works
+one tab per project:
+1. =C-x t t C-x p p= opens a project in a new tab
+2. =C-x t r= name it after the project
+3. inside, =C-x p b= only shows that project's buffers
+4. =C-x t RET= jumps between projects by name
+
+or one tab per task in the same project, like "code" with the source
+split, and "run" with the compilation buffers.
+
+* help
+| key     | does                                      |
+|---------+-------------------------------------------|
+| =C-h k= | what does this key do?                    |
+| =C-h f= | describe a function                       |
+| =C-h v= | describe a variable                       |
+| =C-h m= | everything about the current modes        |
+| =M-x=   | run any command, keys shown next to names |
+| =C-g=   | cancel whatever is happening              |
