@@ -337,7 +337,23 @@
   ;; gfm input so tables and task lists render. markdown-mode adds the html
   ;; header around pandoc's output itself.
   :init (setq markdown-command "pandoc -f gfm"
-              markdown-fontify-code-blocks-natively t))
+              markdown-fontify-code-blocks-natively t
+              ;; github-like look for the browser preview
+              markdown-xhtml-header-content "<style>
+body { max-width: 860px; margin: 2em auto; padding: 0 1em;
+       font: 16px/1.6 -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; color: #1f2328; }
+h1, h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+a { color: #0969da; }
+code { font-family: Consolas, monospace; background: #eff1f3; padding: .2em .4em; border-radius: 6px; }
+pre { background: #f6f8fa; padding: 1em; border-radius: 6px; overflow: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+tr:nth-child(even) { background: #f6f8fa; }
+blockquote { margin: 0; padding: 0 1em; color: #59636e; border-left: .25em solid #d1d9e0; }
+ul.task-list, ul:has(> li > input) { list-style: none; padding-left: 1.2em; }
+img { max-width: 100%; }
+</style>"))
 
 ;--------------------------------------------------------------------------------
 ; minor modes
