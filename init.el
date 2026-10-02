@@ -44,6 +44,8 @@
  c-basic-offset 4
  read-file-name-completion-ignore-case t
  read-buffer-completion-ignore-case t
+ ;; after C-u C-SPC jumps to the last mark, each C-SPC keeps going back
+ set-mark-command-repeat-pop t
  completion-ignore-case t
  )
 
@@ -215,7 +217,10 @@
          ("C-s" . consult-line)
          ("C-x b" . consult-buffer)
          ("M-y" . consult-yank-pop)
-         ("M-g g" . consult-goto-line))
+         ("M-g g" . consult-goto-line)
+         ;; every mark in this buffer / in all buffers, with live preview
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark))
 )
 
 ;------------------------------------------------------------ olivetti
@@ -302,6 +307,9 @@
 ;; Windows will not let you overwrite dist/cslite.dll while the server is
 ;; running, so stop it before republishing a new build.
 (global-set-key (kbd "C-c l s") #'eglot-shutdown)
+(global-set-key (kbd "C-c l n") #'eglot-rename)
+(global-set-key (kbd "C-c l a") #'eglot-code-actions)
+(global-set-key (kbd "C-c l f") #'eglot-format-buffer)
 
 ;------------------------------------------------------------ nxml-mode
 
@@ -429,6 +437,9 @@
 
 ;; folds #region blocks too, see csharp-functions.el
 (global-set-key (kbd "C-c j") #'my/toggle-fold)
+
+;; ascii drawing, C-c C-c leaves it
+(global-set-key (kbd "C-c a") #'artist-mode)
 
 ;; keep init.el and lisp/ compiled: recompile any .el that already has an .elc
 (add-hook 'after-save-hook

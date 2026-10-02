@@ -24,6 +24,10 @@ lists everything under it.
 | =C-c l r=         | restart cslite                                                                |
 | =C-c l s=         | stop the language server (before republishing it)                             |
 | =C-c l e=         | eglot events buffer (debug lsp)                                               |
+| =C-c l n=         | rename symbol everywhere (lsp)                                                |
+| =C-c l a=         | code actions: fixes, usings, refactors                                        |
+| =C-c l f=         | format buffer                                                                 |
+| =C-c a=           | artist mode (ascii drawing)                                                   |
 | =C-x g=           | magit status                                                                  |
 | =<f9>=            | olivetti (centered writing mode)                                              |
 | =C-c h e= / =h c= | open elisp notes / this cheatsheet                                            |
@@ -184,9 +188,66 @@ one tab per project:
 or one tab per task in the same project, like "code" with the source
 split, and "run" with the compilation buffers.
 
+* marks, registers and bookmarks
+three ways to get back to a place, from short-lived to permanent.
+
+** marks
+the mark is the other end of the region. emacs also keeps the last 16
+in a ring per buffer, plus one global ring across buffers. many jumps
+leave a mark behind on their own (=M-<=, =M->=, =C-s=, =M-.=, search
+results...), so you can usually go back without having set one.
+
+| key           | does                                              |
+|---------------+---------------------------------------------------|
+| =C-SPC C-SPC= | leave a mark here without selecting anything      |
+| =C-u C-SPC=   | jump back to the last mark in this buffer         |
+| =C-SPC= again | (right after) keep going back through older marks |
+| =C-x C-SPC=   | jump back to the last mark in any buffer          |
+| =C-x C-x=     | swap point and mark (also reselects the region)   |
+| =M-g m=       | list marks in this buffer, live preview (consult) |
+| =M-g k=       | list marks in all buffers (consult)               |
+
+** registers
+named slots, one letter or digit each. gone when emacs closes.
+
+| key           | does                                                    |
+|---------------+---------------------------------------------------------|
+| =C-x r SPC a= | save this position in register =a=                      |
+| =C-x r j a=   | jump to register =a=                                    |
+| =C-x r s a=   | copy the region into =a=                                |
+| =C-x r i a=   | insert the text from =a=                                |
+| =C-x r w a=   | save the window layout in =a= (=C-x r j a= restores it) |
+| =C-x r n a=   | put a number in =a=                                     |
+| =C-x r + a=   | add to the number in =a=                                |
+
+** bookmarks
+like registers for positions, but saved, so they survive restarts.
+| key       | does                                  |
+|-----------+---------------------------------------|
+| =C-x r m= | set a bookmark here (asks for a name) |
+| =C-x r b= | jump to a bookmark                    |
+| =C-x r l= | list, rename and delete bookmarks     |
+| =m SPC=   | in =C-x b=, only bookmarks            |
+
+* built-in power tools
+| key                | does                                                    |
+|--------------------+---------------------------------------------------------|
+| =<f3>= / =<f4>=    | record a keyboard macro / stop, then =<f4>= replays it  |
+| =C-u 10 <f4>=      | replay the macro 10 times (=C-u 0 <f4>= until it fails) |
+| =M-s o=            | occur: every matching line in a buffer, =RET= jumps     |
+| =e= in occur       | edit the matching lines in place, =C-c C-c= when done   |
+| =C-x p r=          | replace across the whole project (=y= / =n= / =!=)      |
+| =C-x C-q= in dired | rename files by editing their names, =C-c C-c= saves    |
+| =C-x n n=          | narrow: show only the region, everything else hidden    |
+| =C-x n d=          | narrow to the current function                          |
+| =C-x n w=          | widen, show everything again                            |
+| =M-s .=            | search for the symbol at point                          |
+| =M-s h r= / =h u=  | highlight a regexp in the buffer / remove it            |
+| =C-x 4 c=          | second view of the same buffer, can be narrowed apart   |
+
 * artist mode (ascii drawing)
-no shortcut to start it: =M-x artist-mode=. works in any buffer, the
-scratch buffer (=s= on the home screen) is a good place to sketch.
+=C-c a= starts it. works in any buffer, the scratch buffer (=s= on the
+home screen) is a good place to sketch.
 
 | key           | does                                                                       |
 |---------------+----------------------------------------------------------------------------|
