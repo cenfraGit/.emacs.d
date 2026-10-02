@@ -28,6 +28,7 @@ lists everything under it.
 | =<f9>=            | olivetti (centered writing mode)                                              |
 | =C-c h e= / =h c= | open elisp notes / this cheatsheet                                            |
 | =C-c h h=         | home screen here. =RET= on a project opens dired, =p= / =r= jump, =g= refresh |
+| =C-c h t=         | this machine's todo.org (gitignored, one per machine)                         |
 
 ** dotnet menu (=C-c d=)
 | key           | does                                                |
@@ -182,6 +183,22 @@ one tab per project:
 
 or one tab per task in the same project, like "code" with the source
 split, and "run" with the compilation buffers.
+
+* todo list (org)
+=C-c h t= opens it. each machine has its own, it's not in git.
+
+| key                | does                          |
+|--------------------+-------------------------------|
+| =M-S-RET=          | new TODO heading              |
+| =M-RET=            | new heading / list item       |
+| =C-c C-t=          | cycle TODO / DONE / nothing   |
+| =S-<right>=        | same, on the heading at point |
+| =C-c ,=            | priority [#A] [#B] [#C]       |
+| =C-c C-s=          | schedule a date               |
+| =C-c C-d=          | deadline                      |
+| =M-<up>/<down>=    | move heading up / down        |
+| =M-<left>/<right>= | promote / demote heading      |
+| =TAB=              | fold / unfold a heading       |
 
 * help
 | key     | does                                      |

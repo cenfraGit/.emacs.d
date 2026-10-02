@@ -295,6 +295,28 @@
     (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet clean" "*c*"))
                    "dotnet clean -clp:ForceConsoleColor"))))
 
+(ert-deftest my/todo-starts-new-file-and-keeps-existing ()
+  (require 'notes-functions)
+  (my/test--with-temp-dir
+   dir
+   (let ((user-emacs-directory dir))
+     (my/open-todo)
+     (unwind-protect
+         (progn
+           ;; the folder exists, the file doesn't yet
+           (should (file-equal-p (file-name-directory buffer-file-name) dir))
+           (should (equal (file-name-nondirectory buffer-file-name) "todo.org"))
+           (should (equal (buffer-string) (concat "#+title: todo, " (system-name) "\n\n* TODO ")))
+           (should (eobp))
+           ;; nothing is written until saved
+           (should-not (file-exists-p buffer-file-name)))
+       (set-buffer-modified-p nil)
+       (kill-buffer))
+     (write-region "* TODO mine\n" nil (expand-file-name "todo.org" dir))
+     (my/open-todo)
+     (unwind-protect (should (equal (buffer-string) "* TODO mine\n"))
+       (kill-buffer)))))
+
 (ert-deftest my/cheatsheet-opens-read-only ()
   (require 'notes-functions)
   (my/open-notes-cheatsheet)
