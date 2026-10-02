@@ -97,7 +97,8 @@
 
 (use-package company
   :ensure t
-  :defer 2
+  ;; loaded while idle, see "idle loading" below
+  :defer t
   :custom
   (company-idle-delay 0.2)
   (company-minimum-prefix-length 2)
@@ -157,23 +158,33 @@
 ;; took 7s to load on the first .org file.
 (setq org-modules nil)
 
-;; org takes ~2-3s to load here. load it a piece at a time while idle, so the
-;; first .org file opens fast and no single pause is noticeable.
+;------------------------------------------------------------ idle loading
+
+;; company (~0.9s), the c# stack (~1.9s) and org (~2-3s) are slow to load here.
+;; load them a piece at a time while idle, so the first use is fast and no
+;; single pause is noticeable. an item is a feature to require, or a function
+;; to call. typing just delays the next piece until the next pause.
 ;; not named `features': init.el binds dynamically, and that would hide the
 ;; global list `require' checks, so nothing would load
-(defun my/preload-org (pending)
-  (if (null pending)
-      ;; first org-mode setup loads even more, do it once in a hidden buffer
-      (with-temp-buffer (org-mode))
-    (require (car pending) nil t)
+(defun my/idle-load (pending)
+  (when pending
+    (let ((item (car pending)))
+      (if (symbolp item) (require item nil t) (funcall item)))
     ;; an idle timer set while already idle needs the current idle time added,
     ;; or it waits for the next idle period
     (run-with-idle-timer (time-add (current-idle-time) 0.1) nil
-                         #'my/preload-org (cdr pending))))
+                         #'my/idle-load (cdr pending))))
 
-(run-with-idle-timer 2 nil #'my/preload-org
-                     '(calendar org-macs org-compat org-keys org-fold ol org-table
-                       ob-core org-list org-src ob org))
+(run-with-idle-timer
+ 2 nil #'my/idle-load
+ `(;; company turns on global-company-mode in its :config once loaded
+   bytecomp xref etags company
+   compile cc-mode treesit eieio auth-source flymake jsonrpc pp ewoc ert diff-mode
+   track-changes eglot cslite csharp-mode
+   calendar org-macs org-compat org-keys org-fold ol org-table ob-core org-list
+   org-src ob org
+   ;; first org-mode setup loads even more, do it once in a hidden buffer
+   ,(lambda () (with-temp-buffer (org-mode)))))
 
 ;------------------------------------------------------------ ibuffer
 
