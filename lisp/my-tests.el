@@ -372,4 +372,81 @@
         (my/toggle-fold))
       (should called))))
 
+;------------------------------------------------------------ home
+
+(require 'home-functions)
+
+(defmacro my/test--with-home-files (projects recent &rest body)
+  "run BODY with PROJECTS and RECENT written to save files in a temp dir"
+  `(my/test--with-temp-dir
+    dir
+    (let ((user-emacs-directory dir))
+      (with-temp-file project-list-file
+        (prin1 (mapcar #'list ,projects) (current-buffer)))
+      (with-temp-file (expand-file-name "recentf" dir)
+        (insert ";;; generated\n\n(setq recentf-list\n      '(\n")
+        (dolist (f ,recent) (insert (format "        %S\n" f)))
+        (insert "        ))\n\n(setq recentf-filter-changer-current 'nil)\n"))
+      ,@body)))
+
+(defun my/test--home-buttons ()
+  (let (labels)
+    (save-excursion
+      (goto-char (point-min))
+      (while (forward-button 1 nil nil t)
+        (push (button-label (button-at (point))) labels)))
+    (nreverse labels)))
+
+(ert-deftest my/home-lists-projects-and-recent-files ()
+  (my/test--with-home-files
+   '("c:/Repos/Api/" "c:/Repos/Web/") '("c:/Repos/Api/Program.cs" "c:/notes.org")
+   (with-current-buffer (my/home)
+     (unwind-protect
+         (progn
+           (should (equal (my/test--home-buttons)
+                          '("c:/Repos/Api/" "c:/Repos/Web/" "c:/Repos/Api/Program.cs" "c:/notes.org")))
+           (should buffer-read-only)
+           (let (opened switched)
+             (cl-letf (((symbol-function 'find-file) (lambda (f) (setq opened f)))
+                       ((symbol-function 'project-switch-project) (lambda (d) (setq switched d))))
+               ;; point starts on the first button
+               (push-button)
+               (my/home--jump "Recent files")
+               (push-button))
+             (should (equal switched "c:/Repos/Api/"))
+             (should (equal opened "c:/Repos/Api/Program.cs"))))
+       (kill-buffer)))))
+
+(ert-deftest my/home-startup-keeps-a-file-from-the-command-line ()
+  (my/test--with-home-files
+   nil nil
+   (let ((file-buffer (find-file-noselect (expand-file-name "recentf" dir))))
+     (unwind-protect (should (eq (my/home-startup) file-buffer))
+       (kill-buffer file-buffer)))
+   (let ((home (my/home-startup)))
+     (unwind-protect
+         (progn
+           (should (equal (buffer-name home) my/home-buffer-name))
+           (should-not (buffer-local-value 'display-line-numbers-mode home)))
+       (kill-buffer home)))))
+
+(ert-deftest my/home-shows-at-most-ten-recent-files ()
+  (my/test--with-home-files
+   nil (mapcar (lambda (n) (format "c:/f%d.cs" n)) (number-sequence 1 15))
+   (with-current-buffer (my/home)
+     (unwind-protect (should (= (length (my/test--home-buttons)) my/home-recent-count))
+       (kill-buffer)))))
+
+(ert-deftest my/home-empty-and-broken-files ()
+  (my/test--with-home-files
+   nil nil
+   (write-region "(setq recentf-list '(\"unterminated" nil (expand-file-name "recentf" dir))
+   (should-not (my/home--recent-files))
+   (with-current-buffer (my/home)
+     (unwind-protect
+         (progn
+           (should-not (my/test--home-buttons))
+           (should (= (how-many "none yet" (point-min) (point-max)) 2)))
+       (kill-buffer)))))
+
 (provide 'my-tests)

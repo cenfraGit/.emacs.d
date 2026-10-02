@@ -370,6 +370,10 @@
 (require 'csharp-functions)
 (require 'dotnet-functions)
 (require 'notes-functions)
+(require 'home-functions)
+
+;; start on the home buffer (projects and recent files), C-c h h reopens it
+(setq initial-buffer-choice #'my/home-startup)
 
 ;------------------------------------------------------------ appearance
 
