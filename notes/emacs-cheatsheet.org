@@ -1,6 +1,7 @@
 #+title: emacs cheatsheet
 #+startup: overview
 
+opens read-only with =C-c h c=, =C-x C-q= to edit it.
 tab on a heading folds/unfolds it. shift-tab cycles the whole file.
 forgot a key? type the prefix (like =C-c d= or =C-x p=) and wait, which-key
 lists everything under it.
@@ -30,6 +31,8 @@ lists everything under it.
 |---------------+-----------------------------------------------------|
 | =-c=          | pick Release / Debug (press again to clear)         |
 | =-n=          | --no-restore, saves ~1s when packages didn't change |
+| =-b=          | --no-build, run/test only, just start what's built  |
+| =-w=          | hide compiler warnings (build, test, run)           |
 | =-p=          | include pre-release (package search and install)    |
 | =b r= / =b p= | build solution root / pick a project                |
 | =c r= / =c p= | clean root / project                                |
@@ -52,7 +55,7 @@ split showing one buffer. closing a window doesn't close the buffer.
 | =C-x b=              | switch buffer (consult, live preview)          |
 | =C-x k=              | kill (close) buffer                            |
 | =C-x <left>/<right>= | previous / next buffer in this window          |
-| =C-x C-b=            | list all buffers                               |
+| =C-x C-b=            | ibuffer, see below                             |
 | =C-x p b=            | switch to a buffer of the current project only |
 | =C-x p k=            | kill all buffers of the current project        |
 | =C-x 2= / =C-x 3=    | split below / right                            |
@@ -60,11 +63,32 @@ split showing one buffer. closing a window doesn't close the buffer.
 | =C-x 0= / =C-x 1=    | close this window / close all others           |
 | =C-x 4 b=, =C-x 4 f= | buffer / file in the other window              |
 
+** ibuffer (=C-x C-b=)
+a buffer list you can act on. mark buffers, then do something to all of them.
+| key           | does                                          |
+|---------------+-----------------------------------------------|
+| =RET= / =o=   | open buffer / open in other window            |
+| =m= / =u=     | mark / unmark                                 |
+| =U=           | unmark all                                    |
+| =d= then =x=  | flag for closing, then close all flagged      |
+| =D=           | close marked buffers right away               |
+| =S=           | save marked buffers                           |
+| =* M=         | mark all buffers of a mode (like csharp-mode) |
+| =% n=         | mark by name regexp                           |
+| =/ n=         | filter by name                                |
+| =/ m=         | filter by mode                                |
+| =/ /=         | remove filters                                |
+| =s a= / =s m= | sort by name / by mode                        |
+| =g=           | refresh                                       |
+| =q=           | quit                                          |
+
 ** narrowing in =C-x b=
-type the letter and a space first:
+type the letter and a space first. recent files also show up below the
+buffers without narrowing.
 | prefix  | shows                              |
 |---------+------------------------------------|
 | =p SPC= | only the current project           |
+| =f SPC= | recently opened files (last 100)   |
 | =b SPC= | buffers                            |
 | =* SPC= | modified (unsaved) buffers         |
 | =m SPC= | bookmarks                          |

@@ -11,6 +11,8 @@
   ["Arguments"
    ("-c" "configuration" "--configuration=" :choices ("Release" "Debug"))
    ("-n" "no restore" "--no-restore")
+   ("-b" "no build (run, test)" "--no-build")
+   ("-w" "hide warnings" "--property:WarningLevel=0")
    ("-p" "include pre-release packages" "--prerelease")]
   [["Build"
     ("b r" "root" my/dotnet-build-root)

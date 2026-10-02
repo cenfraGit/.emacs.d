@@ -283,4 +283,25 @@
             ((symbol-function 'read-string) (lambda (&rest _) "")))
     (should-error (call-interactively 'my/dotnet-add-package) :type 'user-error)))
 
+(ert-deftest my/dotnet-no-build-and-warning-level-per-command ()
+  (let ((menu '("--no-build" "--property:WarningLevel=0")))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet run --project a.csproj" "*r*"))
+                   "dotnet run --project a.csproj --no-build --property:WarningLevel=0 -clp:ForceConsoleColor"))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet test" "*t*"))
+                   "dotnet test --no-build --property:WarningLevel=0 -clp:ForceConsoleColor"))
+    ;; dotnet build and clean reject --no-build
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet build" "*b*"))
+                   "dotnet build --property:WarningLevel=0 -clp:ForceConsoleColor"))
+    (should (equal (my/test--dotnet-command menu (my/dotnet--compile "dotnet clean" "*c*"))
+                   "dotnet clean -clp:ForceConsoleColor"))))
+
+(ert-deftest my/cheatsheet-opens-read-only ()
+  (require 'notes-functions)
+  (my/open-notes-cheatsheet)
+  (unwind-protect
+      (progn
+        (should (string-suffix-p "emacs-cheatsheet.org" buffer-file-name))
+        (should buffer-read-only))
+    (kill-buffer)))
+
 (provide 'my-tests)

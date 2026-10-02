@@ -9,8 +9,9 @@
 )
 
 (defun my/open-notes-cheatsheet ()
+  "open the cheatsheet read-only, C-x C-q to edit it"
   (interactive)
-  (find-file (expand-file-name "notes/emacs-cheatsheet.org" user-emacs-directory))
+  (find-file-read-only (expand-file-name "notes/emacs-cheatsheet.org" user-emacs-directory))
 )
 
 (global-set-key (kbd "C-c h e") #'my/open-notes-elisp)

@@ -136,6 +136,25 @@
   (savehist-mode 1)
 )
 
+;------------------------------------------------------------ recentf
+
+;; recent files also show up in C-x b (f SPC narrows to them)
+(use-package recentf
+  :ensure nil
+  :defer t
+  :init
+  (setq recentf-max-saved-items 100
+        ;; the default checks every file at startup, which is slow on this
+        ;; machine. drop deleted files after 5 minutes idle instead.
+        recentf-auto-cleanup 300)
+  ;; loading it costs ~100ms here, so wait until emacs is idle
+  (run-with-idle-timer 1 nil #'recentf-mode 1)
+)
+
+;------------------------------------------------------------ ibuffer
+
+(global-set-key (kbd "C-x C-b") #'ibuffer)
+
 ;------------------------------------------------------------ orderless
 
 (use-package orderless

@@ -25,16 +25,21 @@
 
 (defun my/dotnet--args (command)
   "return the menu arguments that COMMAND accepts"
-  (let ((args (my/dotnet--menu-args)))
-    (cond
-     ((string-match-p "\\`dotnet add .* package " command)
-      (seq-intersection args '("--prerelease")))
-     ;; dotnet new, sln and add reference take none of them
-     ((not (my/dotnet--msbuild-p command)) nil)
-     ;; dotnet clean also rejects --no-restore
-     ((string-prefix-p "dotnet clean" command)
-      (seq-difference args '("--no-restore" "--prerelease")))
-     (t (remove "--prerelease" args))))
+  ;; dotnet rejects options a command doesn't know, so only pass the ones it does.
+  ;; new, sln and add reference take none of them.
+  (let ((accepted
+         (cond
+          ((string-match-p "\\`dotnet add .* package " command)
+           '("--prerelease"))
+          ((string-match-p "\\`dotnet \\(run\\|test\\)\\_>" command)
+           '("--configuration=" "--no-restore" "--no-build" "--property:WarningLevel=0"))
+          ((string-match-p "\\`dotnet build\\_>" command)
+           '("--configuration=" "--no-restore" "--property:WarningLevel=0"))
+          ((string-match-p "\\`dotnet clean\\_>" command)
+           '("--configuration=")))))
+    (seq-filter (lambda (arg)
+                  (seq-some (lambda (prefix) (string-prefix-p prefix arg)) accepted))
+                (my/dotnet--menu-args)))
 )
 
 (defun my/dotnet--root-or-here ()
