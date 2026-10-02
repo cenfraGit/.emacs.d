@@ -57,10 +57,14 @@
 (defun my/home--render (&rest _)
   (let ((inhibit-read-only t))
     (erase-buffer)
-    (insert (propertize "emacs" 'face '(:weight bold :height 1.5)) "\n"
-            (propertize (format "started in %s" (emacs-init-time "%.2fs")) 'face 'shadow)
+    ;; the same logo as the default emacs startup screen
+    (when (display-images-p)
+      ;; full size takes half the window and pushes the lists off screen
+      (insert-image (create-image (fancy-splash-image-file) nil nil :scale 0.6))
+      (insert "\n\n"))
+    (insert (propertize (format "started in %s" (emacs-init-time "%.2fs")) 'face 'shadow)
             "\n\n")
-    (my/home--section "Projects" "p" (my/home--projects) #'project-switch-project)
+    (my/home--section "Projects" "p" (my/home--projects) #'dired)
     (my/home--section "Recent files" "r"
                       (seq-take (my/home--recent-files) my/home-recent-count)
                       #'find-file)
@@ -113,6 +117,10 @@
 
 ;------------------------------------------------------------ keybindings
 
+;; C-c h h shows it in the current window
 (global-set-key (kbd "C-c h h") #'my/home)
+
+;; new tabs (C-x t 2) open on it too
+(setq tab-bar-new-tab-choice #'my/home)
 
 (provide 'home-functions)

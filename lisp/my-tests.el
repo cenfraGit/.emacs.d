@@ -406,9 +406,10 @@
            (should (equal (my/test--home-buttons)
                           '("c:/Repos/Api/" "c:/Repos/Web/" "c:/Repos/Api/Program.cs" "c:/notes.org")))
            (should buffer-read-only)
+           (should-not (string-match-p "\\`emacs" (buffer-string)))
            (let (opened switched)
              (cl-letf (((symbol-function 'find-file) (lambda (f) (setq opened f)))
-                       ((symbol-function 'project-switch-project) (lambda (d) (setq switched d))))
+                       ((symbol-function 'dired) (lambda (d) (setq switched d))))
                ;; point starts on the first button
                (push-button)
                (my/home--jump "Recent files")
@@ -429,6 +430,12 @@
            (should (equal (buffer-name home) my/home-buffer-name))
            (should-not (buffer-local-value 'display-line-numbers-mode home)))
        (kill-buffer home)))))
+
+(ert-deftest my/home-on-new-tabs ()
+  (should (eq tab-bar-new-tab-choice #'my/home))
+  (let ((buffer (funcall tab-bar-new-tab-choice)))
+    (unwind-protect (should (equal (buffer-name buffer) my/home-buffer-name))
+      (kill-buffer buffer))))
 
 (ert-deftest my/home-shows-at-most-ten-recent-files ()
   (my/test--with-home-files

@@ -7,27 +7,27 @@ forgot a key? type the prefix (like =C-c d= or =C-x p=) and wait, which-key
 lists everything under it.
 
 * my keys (from init.el and lisp/)
-| key               | does                                                                             |
-|-------------------+----------------------------------------------------------------------------------|
-| =C-c d=           | dotnet menu (build, test, run, new, refs, packages)                              |
-| =C-c c l=         | line comment  =//---- word=                                                      |
-| =C-c c i=         | inline comment  =// --- word --- //=                                             |
-| =C-c c r=         | block comment (3 lines)                                                          |
-| =C-c c h=         | header comment at top of file                                                    |
-| =M-;=             | comment / uncomment region or line                                               |
-| =C-c j=           | fold / unfold the block or #region at point                                      |
-| =C-c @ C-M-h=     | fold every block in the file (not #regions)                                      |
-| =C-c @ C-M-s=     | unfold every block                                                               |
-| =C-c p ...=       | project keys (same as =C-x p ...=, see below)                                    |
-| =C-c e n= / =e p= | next / previous error (flymake)                                                  |
-| =C-c e l=         | list all errors in buffer                                                        |
-| =C-c l r=         | restart cslite                                                                   |
-| =C-c l s=         | stop the language server (before republishing it)                                |
-| =C-c l e=         | eglot events buffer (debug lsp)                                                  |
-| =C-x g=           | magit status                                                                     |
-| =<f9>=            | olivetti (centered writing mode)                                                 |
-| =C-c h e= / =h c= | open elisp notes / this cheatsheet                                               |
-| =C-c h h=         | home buffer: projects and recent files. =p= / =r= jump, =RET= opens, =g= refresh |
+| key               | does                                                                          |
+|-------------------+-------------------------------------------------------------------------------|
+| =C-c d=           | dotnet menu (build, test, run, new, refs, packages)                           |
+| =C-c c l=         | line comment  =//---- word=                                                   |
+| =C-c c i=         | inline comment  =// --- word --- //=                                          |
+| =C-c c r=         | block comment (3 lines)                                                       |
+| =C-c c h=         | header comment at top of file                                                 |
+| =M-;=             | comment / uncomment region or line                                            |
+| =C-c j=           | fold / unfold the block or #region at point                                   |
+| =C-c @ C-M-h=     | fold every block in the file (not #regions)                                   |
+| =C-c @ C-M-s=     | unfold every block                                                            |
+| =C-c p ...=       | project keys (same as =C-x p ...=, see below)                                 |
+| =C-c e n= / =e p= | next / previous error (flymake)                                               |
+| =C-c e l=         | list all errors in buffer                                                     |
+| =C-c l r=         | restart cslite                                                                |
+| =C-c l s=         | stop the language server (before republishing it)                             |
+| =C-c l e=         | eglot events buffer (debug lsp)                                               |
+| =C-x g=           | magit status                                                                  |
+| =<f9>=            | olivetti (centered writing mode)                                              |
+| =C-c h e= / =h c= | open elisp notes / this cheatsheet                                            |
+| =C-c h h=         | home screen here. =RET= on a project opens dired, =p= / =r= jump, =g= refresh |
 
 ** dotnet menu (=C-c d=)
 | key           | does                                                |
@@ -161,7 +161,7 @@ the bar shows up when there are 2+ tabs. tabs are numbered
 
 | key         | does                                            |
 |-------------+-------------------------------------------------|
-| =C-x t 2=   | new tab                                         |
+| =C-x t 2=   | new tab, opens on the home screen               |
 | =C-x t 0=   | close tab                                       |
 | =C-x t o=   | next tab (=C-TAB= too, once the bar is showing) |
 | =C-x t O=   | previous tab                                    |
