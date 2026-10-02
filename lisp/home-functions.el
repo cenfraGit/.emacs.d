@@ -73,7 +73,7 @@
     (my/home--section "Recent files" "r"
                       (seq-take (my/home--recent-files) my/home-recent-count)
                       #'find-file)
-    (insert (propertize "RET open  TAB next  t todo  p projects  r recent  g refresh  q close"
+    (insert (propertize "RET open  TAB next  s scratch  t todo  p projects  r recent  g refresh  q close"
                         'face 'shadow))
     (goto-char (point-min))
     (forward-button 1 nil nil t))
@@ -91,6 +91,8 @@
   :parent special-mode-map
   "TAB" #'forward-button
   "<backtab>" #'backward-button
+  ;; built in, recreates *scratch* if it was killed
+  "s" #'scratch-buffer
   "t" (lambda () (interactive) (my/home--jump "Todo"))
   "p" (lambda () (interactive) (my/home--jump "Projects"))
   "r" (lambda () (interactive) (my/home--jump "Recent files")))

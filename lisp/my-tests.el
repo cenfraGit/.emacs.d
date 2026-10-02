@@ -459,6 +459,17 @@
            (should-not (buffer-local-value 'display-line-numbers-mode home)))
        (kill-buffer home)))))
 
+(ert-deftest my/home-s-opens-scratch-even-if-killed ()
+  (with-current-buffer (my/home)
+    (unwind-protect
+        (progn
+          (should (eq (key-binding (kbd "s")) #'scratch-buffer))
+          (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
+          (save-window-excursion
+            (call-interactively (key-binding (kbd "s")))
+            (should (equal (buffer-name) "*scratch*"))))
+      (kill-buffer my/home-buffer-name))))
+
 (ert-deftest my/home-on-new-tabs ()
   (should (eq tab-bar-new-tab-choice #'my/home))
   (let ((buffer (funcall tab-bar-new-tab-choice)))

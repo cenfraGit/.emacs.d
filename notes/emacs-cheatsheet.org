@@ -27,7 +27,7 @@ lists everything under it.
 | =C-x g=           | magit status                                                                  |
 | =<f9>=            | olivetti (centered writing mode)                                              |
 | =C-c h e= / =h c= | open elisp notes / this cheatsheet                                            |
-| =C-c h h=         | home screen here. =RET= on a project opens dired, =p= / =r= jump, =g= refresh |
+| =C-c h h=         | home screen here. =s= scratch, =t= / =p= / =r= jump, =RET= opens, =g= refresh |
 | =C-c h t=         | this machine's todo.org (gitignored, one per machine)                         |
 
 ** dotnet menu (=C-c d=)
@@ -183,6 +183,35 @@ one tab per project:
 
 or one tab per task in the same project, like "code" with the source
 split, and "run" with the compilation buffers.
+
+* artist mode (ascii drawing)
+no shortcut to start it: =M-x artist-mode=. works in any buffer, the
+scratch buffer (=s= on the home screen) is a good place to sketch.
+
+| key           | does                                                                       |
+|---------------+----------------------------------------------------------------------------|
+| =C-c C-a C-o= | pick an operation from a list of all of them                               |
+| =C-c C-c=     | leave artist mode                                                          |
+| mouse-1 drag  | draw with the current operation                                            |
+| mouse-2       | menu of operations                                                         |
+| =RET=         | keyboard drawing: set start point, move with arrows, =RET= again to finish |
+| =C-c C-a l=   | line                                                                       |
+| =C-c C-a p=   | poly-line                                                                  |
+| =C-c C-a r=   | rectangle                                                                  |
+| =C-c C-a s=   | square                                                                     |
+| =C-c C-a e=   | ellipse                                                                    |
+| =C-c C-a c=   | circle                                                                     |
+| =C-c C-a t=   | text                                                                       |
+| =C-c C-a f=   | flood fill                                                                 |
+| =C-c C-a S=   | spray can                                                                  |
+| =C-c C-a C-d= | erase characters                                                           |
+| =C-c C-a v=   | erase a whole line segment                                                 |
+| =C-c C-a C-k= | cut a rectangle                                                            |
+| =C-c C-a M-w= | copy a rectangle                                                           |
+| =C-c C-a C-y= | paste                                                                      |
+| =C-c C-a C-l= | character used for lines                                                   |
+| =C-c C-a C-f= | character used for fill                                                    |
+| =C-c C-a C-r= | toggle rubber-banding (preview while drawing)                              |
 
 * todo list (org)
 =C-c h t= opens it. each machine has its own, it's not in git.
