@@ -296,8 +296,7 @@ style: tables, task lists). preview uses pandoc.
 
 | key                  | does                                           |
 |----------------------+------------------------------------------------|
-| =C-c C-c p=          | preview in the browser                         |
-| =C-c C-c l=          | live preview in a side window, updates on save |
+| =C-c C-c p=          | preview in the browser, via a temp file        |
 | =C-c C-c e=          | export to an .html file next to it             |
 | =TAB=                | fold / unfold a heading                        |
 | =C-c <up>/<down>=    | move heading, list item or table row up / down |

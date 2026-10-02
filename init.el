@@ -353,7 +353,11 @@ tr:nth-child(even) { background: #f6f8fa; }
 blockquote { margin: 0; padding: 0 1em; color: #59636e; border-left: .25em solid #d1d9e0; }
 ul.task-list, ul:has(> li > input) { list-style: none; padding-left: 1.2em; }
 img { max-width: 100%; }
-</style>"))
+</style>")
+  :config
+  ;; both leave an .html next to the file. C-c C-c p uses a temp file instead.
+  (keymap-unset markdown-mode-command-map "l" t)
+  (keymap-unset markdown-mode-command-map "v" t))
 
 ;--------------------------------------------------------------------------------
 ; minor modes
