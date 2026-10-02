@@ -4,6 +4,8 @@
 ; startup buffer with known projects and recent files
 ;--------------------------------------------------------------------------------
 
+(require 'notes-functions)
+
 (defvar my/home-buffer-name "*home*")
 (defvar my/home-recent-count 10)
 
@@ -64,11 +66,14 @@
       (insert "\n\n"))
     (insert (propertize (format "started in %s" (emacs-init-time "%.2fs")) 'face 'shadow)
             "\n\n")
+    ;; shown even before the file exists, my/open-todo starts it
+    (my/home--section "Todo" "t" (list (expand-file-name "todo.org" user-emacs-directory))
+                      (lambda (_) (my/open-todo)))
     (my/home--section "Projects" "p" (my/home--projects) #'dired)
     (my/home--section "Recent files" "r"
                       (seq-take (my/home--recent-files) my/home-recent-count)
                       #'find-file)
-    (insert (propertize "RET open  TAB next  p projects  r recent  g refresh  q close"
+    (insert (propertize "RET open  TAB next  t todo  p projects  r recent  g refresh  q close"
                         'face 'shadow))
     (goto-char (point-min))
     (forward-button 1 nil nil t))
@@ -86,6 +91,7 @@
   :parent special-mode-map
   "TAB" #'forward-button
   "<backtab>" #'backward-button
+  "t" (lambda () (interactive) (my/home--jump "Todo"))
   "p" (lambda () (interactive) (my/home--jump "Projects"))
   "r" (lambda () (interactive) (my/home--jump "Recent files")))
 

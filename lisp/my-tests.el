@@ -425,17 +425,23 @@
    (with-current-buffer (my/home)
      (unwind-protect
          (progn
+           ;; todo first, always
            (should (equal (my/test--home-buttons)
-                          '("c:/Repos/Api/" "c:/Repos/Web/" "c:/Repos/Api/Program.cs" "c:/notes.org")))
+                          (list (abbreviate-file-name (expand-file-name "todo.org" dir))
+                                "c:/Repos/Api/" "c:/Repos/Web/" "c:/Repos/Api/Program.cs" "c:/notes.org")))
            (should buffer-read-only)
            (should-not (string-match-p "\\`emacs" (buffer-string)))
-           (let (opened switched)
+           (let (opened switched todo)
              (cl-letf (((symbol-function 'find-file) (lambda (f) (setq opened f)))
-                       ((symbol-function 'dired) (lambda (d) (setq switched d))))
-               ;; point starts on the first button
+                       ((symbol-function 'dired) (lambda (d) (setq switched d)))
+                       ((symbol-function 'my/open-todo) (lambda () (setq todo t))))
+               ;; point starts on the todo button
+               (push-button)
+               (my/home--jump "Projects")
                (push-button)
                (my/home--jump "Recent files")
                (push-button))
+             (should todo)
              (should (equal switched "c:/Repos/Api/"))
              (should (equal opened "c:/Repos/Api/Program.cs"))))
        (kill-buffer)))))
@@ -463,7 +469,7 @@
   (my/test--with-home-files
    nil (mapcar (lambda (n) (format "c:/f%d.cs" n)) (number-sequence 1 15))
    (with-current-buffer (my/home)
-     (unwind-protect (should (= (length (my/test--home-buttons)) my/home-recent-count))
+     (unwind-protect (should (= (length (my/test--home-buttons)) (1+ my/home-recent-count)))
        (kill-buffer)))))
 
 (ert-deftest my/home-empty-and-broken-files ()
@@ -474,7 +480,8 @@
    (with-current-buffer (my/home)
      (unwind-protect
          (progn
-           (should-not (my/test--home-buttons))
+           ;; only the todo entry, which shows even without a file
+           (should (= (length (my/test--home-buttons)) 1))
            (should (= (how-many "none yet" (point-min) (point-max)) 2)))
        (kill-buffer)))))
 
